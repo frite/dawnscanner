@@ -30,6 +30,17 @@ task :release => [:prepare]
 # end
 
 # end
+namespace :version do
+  desc 'Calculate some infos you want to put in version.rb'
+  task :update do
+    build_number  = `git describe --tags --long | cut -d \'-\' -f 2`
+    commit_hash   = `git describe --tags --long | cut -d \'-\' -f 3`
+    release       = Time.now.strftime("%Y%m%d")
+    puts "BUILD = \"#{build_number.chop}\""
+    puts "COMMIT = \"#{commit_hash.chop}\""
+    puts "RELEASE = \"#{release}\""
+  end
+end
 desc "Create a new CVE test"
 task :cve, :name do |t,args|
   name      = args.name
