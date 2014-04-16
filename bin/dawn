@@ -172,7 +172,8 @@ unless options[:gemfile_scan]
       engine = Codesake::Dawn::Padrino.new(target)    if options[:mvc] == :padrino
     end
   rescue ArgumentError => e
-    $logger.die(e.message)
+    $logger.err(e.message)
+    $logger.die("ruby framework auto detect failed. Please force if rails, sinatra or padrino with -r, -s or -p flags") if engine.nil?
   end
 else
   engine = Codesake::Dawn::GemfileLock.new(target, options[:gemfile_name], guess) # if options[:gemfile_scan]
