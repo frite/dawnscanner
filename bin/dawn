@@ -154,7 +154,7 @@ trap("INT")   { $logger.die('[INTERRUPTED]') }
 $logger.die("missing target") if target.nil? && options[:gemfile_name].empty?
 $logger.die("invalid directory (#{target})") if options[:gemfile_name].empty?  &&! Codesake::Dawn::Core.is_good_target?(target)
 $logger.die("if scanning Gemfile.lock file you must not force target MVC using one from -r, -s or -p flag") if ! options[:mvc].empty? && options[:gemfile_scan]
-$logger.log("security check enabled: #{options[:enabled_checks]}") if options[:debug]
+$logger.debug("security check enabled: #{options[:enabled_checks]}") if options[:debug]
 
 
 ## MVC auto detect.
@@ -164,7 +164,7 @@ unless options[:gemfile_scan]
   begin
     if options[:mvc].empty?
       engine = Codesake::Dawn::Core.detect_mvc(target)
-      $logger.log("using #{engine.class.name} engine via autodect") if options[:debug]
+      $logger.debug("using #{engine.class.name} engine via autodect") if options[:debug]
     else
       engine = Codesake::Dawn::Rails.new(target)      if options[:mvc] == :rails
       engine = Codesake::Dawn::Sinatra.new(target)    if options[:mvc] == :sinatra
@@ -195,7 +195,7 @@ end
 
 $logger.die "missing target framework option" if engine.nil?
 $logger.warn "this is a development Codesake::Dawn version" if Codesake::Dawn::RELEASE == "(development)"
-$logger.die "nothing to do on #{target}" if ! options[:gemfile_scan] && ! engine.can_apply? 
+$logger.die "nothing to do on #{target}" if ! options[:gemfile_scan] && ! engine.can_apply?
 
 engine.load_knowledge_base(options[:enabled_checks])
 ret = engine.apply_all
