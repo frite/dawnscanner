@@ -5,9 +5,13 @@ It supports [Sinatra](http://www.sinatrarb.com),
 [Padrino](http://www.padrinorb.com) and [Ruby on Rails](http://rubyonrails.org)
 frameworks.
 
-_latest update: Mon Mar 31 09:05:57 CEST 2014_
+_latest update: Fri Apr 18 07:55:10 CEST 2014_
 
-## Version 1.1.1 - codename: Lightning McQueen (2014-0x-xx)
+## Version 1.1.1 - codename: Lightning McQueen (2014-04-22)
+
+* Adding a check for OSVDB-105971: remote code execution for sfpagent ruby gem
+
+## Version 1.1.1 - codename: Lightning McQueen (2014-04-11)
 
 * Fixing issue #52. The trailing '/' must be removed in File.exist? A begin -
   rescue block was added so to handle any exception. The default configuration
@@ -98,8 +102,6 @@ _latest update: Mon Mar 31 09:05:57 CEST 2014_
   an embedded default configuration if the supplied filename doesn't exist.
 * Nokogiri DoS security checks discovered in December 2013, now have their own
   CVE: CVE-2013-6460 and CVE-2013-6461
-
-## Version 1.0.6 - codename: Lightning McQueen (2014-03-23)
 
 ## Version 1.0.6 - codename: Lightning McQueen (2014-03-23)
 
