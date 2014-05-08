@@ -66,7 +66,7 @@ begin
 opts.each do |opt, val|
   case opt
   when '--version'
-    puts "#{Codesake::Dawn::VERSION} [#{Codesake::Dawn::CODENAME}]"
+    puts "#{Codesake::Dawn::VERSION} (build: #{Codesake::Dawn::BUILD}) [#{Codesake::Dawn::CODENAME}]"
     Kernel.exit(0)
   when '--config-file'
     options = Codesake::Dawn::Core.read_conf(val)
@@ -142,7 +142,6 @@ opts.each do |opt, val|
   end
 end
 rescue GetoptLong::InvalidOption => e
-
   $logger.helo APPNAME, Codesake::Dawn::VERSION
   $logger.err e.message
   Kernel.exit(Codesake::Dawn::Core.help)
