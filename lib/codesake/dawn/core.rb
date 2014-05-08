@@ -91,6 +91,7 @@ module Codesake
 
       def self.detect_mvc_from_gemfile(my_dir, target)
         begin
+          a = []
           File.open("Gemfile", "r") do |f|
             a = f.readlines
           end
@@ -99,7 +100,7 @@ module Codesake
           $logger.debug("I will look for rack, sinatra, padrino and rails")
           found = {:rack=>false, :sinatra=>false, :padrino=>false, :rails=>false}
           a.each do |g|
-            line = g.split(' ').gsub('\'', '').gsub('\"', '')
+            line = g.gsub('\'', '').gsub('\"', '').split(' ')
             if line.index('#').nil? || line.index('#') != 0
               # it's not a comment
               if ! line.index('gem').nil?
@@ -142,9 +143,10 @@ module Codesake
         # raise ArgumentError.new("no Gemfile.lock in #{target}") unless File.exist?("Gemfile.lock")
         return self.detect_mvc_from_gemfile_lock(my_dir, target) if File.exist?("Gemfile.lock")
 
-        $logger.warn "no Gemfile.lock in #{target}"
+        $logger.warn "no Gemfile.lock in #{target}. Trying detecting MVC from Gemfile"
         return self.detect_mvc_from_gemfile(my_dir, target) if File.exist?("Gemfile")
 
+        nil
       end
 
       def self.is_good_target?(target)
