@@ -89,15 +89,15 @@ module Codesake
 
       end
 
-      def self.detect_mvc_from_gemfile(my_dir, target)
+      def self.detect_mvc_from_gemfile(my_dir, target, debug=false)
         begin
           a = []
           File.open("Gemfile", "r") do |f|
             a = f.readlines
           end
 
-          $logger.debug("Trying to guess MVC form gems found in Gemfile")
-          $logger.debug("I will look for rack, sinatra, padrino and rails")
+          $logger.debug("Trying to guess MVC form gems found in Gemfile") if debug
+          $logger.debug("I will look for rack, sinatra, padrino and rails") if debug
           found = {:rack=>false, :sinatra=>false, :padrino=>false, :rails=>false}
           a.each do |g|
             line = g.gsub('\'', '').gsub('\"', '').split(' ')
@@ -105,7 +105,7 @@ module Codesake
               # it's not a comment
               if ! line.index('gem').nil?
                 # it's a gem dependency line here
-                $logger.debug("line is #{line}")
+                $logger.debug("line is #{line}") if debug
                 found[:rack] = true if ! line.index("rack").nil?
                 found[:sinatra] = true if ! line.index("sinatra").nil?
                 found[:padrino] = true if ! line.index("padrino").nil?
@@ -113,8 +113,15 @@ module Codesake
               end
             end
           end
-          $logger.debug("found array is #{found}")
+          $logger.debug("found array is #{found}") if debug
 
+          # when pure rack will be supported
+          # return Codesake::Dawn::Rack.new(target)    if found[:rack]
+          return Codesake::Dawn::Rails.new(target)    if found[:rails]
+          return Codesake::Dawn::Padrino.new(target)  if found[:padrino]
+          return Codesake::Dawn::Sinatra.new(target) if found[:sinatra]
+
+          return nil
         rescue => e
           $logger.bug("can't read Gemfile: #{e.message}")
           return nil
@@ -122,7 +129,7 @@ module Codesake
 
       end
 
-      def self.detect_mvc_from_gemfile_lock(my_dir, target)
+      def self.detect_mvc_from_gemfile_lock(my_dir, target, debug=false)
 
         lockfile = Bundler::LockfileParser.new(Bundler.read_file("Gemfile.lock"))
         Dir.chdir(my_dir)
@@ -134,17 +141,17 @@ module Codesake
         return Codesake::Dawn::Sinatra.new(target)
       end
 
-      def self.detect_mvc(target)
+      def self.detect_mvc(target, debug=false)
 
         raise ArgumentError.new("you must set target directory") if target.nil?
 
         my_dir = Dir.pwd
         Dir.chdir(target)
         # raise ArgumentError.new("no Gemfile.lock in #{target}") unless File.exist?("Gemfile.lock")
-        return self.detect_mvc_from_gemfile_lock(my_dir, target) if File.exist?("Gemfile.lock")
+        return self.detect_mvc_from_gemfile_lock(my_dir, target, debug) if File.exist?("Gemfile.lock")
 
         $logger.warn "no Gemfile.lock in #{target}. Trying detecting MVC from Gemfile"
-        return self.detect_mvc_from_gemfile(my_dir, target) if File.exist?("Gemfile")
+        return self.detect_mvc_from_gemfile(my_dir, target, debug) if File.exist?("Gemfile")
 
         nil
       end

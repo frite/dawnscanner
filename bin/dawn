@@ -163,7 +163,7 @@ $logger.debug("security check enabled: #{options[:enabled_checks]}") if options[
 unless options[:gemfile_scan]
   begin
     if options[:mvc].empty?
-      engine = Codesake::Dawn::Core.detect_mvc(target)
+      engine = Codesake::Dawn::Core.detect_mvc(target, options[:debug])
       $logger.debug("using #{engine.class.name} engine via autodect") if options[:debug]
     else
       engine = Codesake::Dawn::Rails.new(target)      if options[:mvc] == :rails
