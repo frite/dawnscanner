@@ -115,13 +115,15 @@ module Codesake
           end
           $logger.debug("found array is #{found}") if debug
 
+          engine = nil
           # when pure rack will be supported
           # return Codesake::Dawn::Rack.new(target)    if found[:rack]
-          return Codesake::Dawn::Rails.new(target)    if found[:rails]
-          return Codesake::Dawn::Padrino.new(target)  if found[:padrino]
-          return Codesake::Dawn::Sinatra.new(target) if found[:sinatra]
+          engine = Codesake::Dawn::Rails.new(target)    if found[:rails]
+          engine = Codesake::Dawn::Padrino.new(target)  if found[:padrino]
+          engine = Codesake::Dawn::Sinatra.new(target) if found[:sinatra]
+          engine.disable_dependency_checks = true unless engine.nil?
 
-          return nil
+          return engine
         rescue => e
           $logger.bug("can't read Gemfile: #{e.message}")
           return nil

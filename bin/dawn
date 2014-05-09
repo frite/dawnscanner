@@ -195,7 +195,12 @@ end
 
 $logger.die "missing target framework option" if engine.nil?
 $logger.warn "this is a development Codesake::Dawn version" if Codesake::Dawn::RELEASE == "(development)"
-$logger.die "nothing to do on #{target}" if ! options[:gemfile_scan] && ! engine.can_apply?
+$logger.die "nothing to do on #{target}" if ! options[:gemfile_scan] && !engine.disable_dependency_checks && ! engine.can_apply?
+
+if engine.disable_dependency_checks
+  $logger.warn "MVC was detected using Gemfile, so I don't know the version it will be used"
+  $logger.warn "Disabling checks against third party gem vulnerabilities"
+end
 
 engine.load_knowledge_base(options[:enabled_checks])
 ret = engine.apply_all
