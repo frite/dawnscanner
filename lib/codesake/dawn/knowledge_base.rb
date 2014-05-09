@@ -241,6 +241,7 @@ module Codesake
       def initialize(options={})
         @enabled_checks = Codesake::Dawn::Kb::BasicCheck::ALLOWED_FAMILIES
         @enabled_checks = options[:enabled_checks] unless options[:enabled_checks].nil?
+        @disable_dependency_checks = options[:disable_dependency_checks] unless options[:disable_dependency_checks].nil?
 
         @security_checks = load_security_checks
       end
@@ -489,11 +490,28 @@ module Codesake
 
         ret = []
         ret += @aux_checks
-        ret += @cve_security_checks         if @enabled_checks.include?(:cve_bulletin)
-        ret += @owasp_ror_cheatsheet_checks if @enabled_checks.include?(:owasp_ror_cheatsheet)
-        ret += @code_quality_checks         if @enabled_checks.include?(:code_quality)
+        ret += @cve_security_checks           if @enabled_checks.include?(:cve_bulletin)
+        ret += @owasp_ror_cheatsheet_checks   if @enabled_checks.include?(:owasp_ror_cheatsheet)
+        ret += @code_quality_checks           if @enabled_checks.include?(:code_quality)
+        return remove_dependency_checks(ret)  if @disable_dependency_checks
 
         ret
+      end
+      def remove_dependency_checks(ret)
+        r = []
+        ret.each do |check|
+          if check.kind == COMBO_CHECK
+            to_be_added = true
+            check.checks.each do |cc|
+              to_be_added = false if cc.kind == DEPENDENCY_CHECK
+            end
+            r << check if to_be_added
+          else
+            r << check if check.kind != DEPENDENCY_CHECK
+          end
+        end
+
+        r
       end
     end
 
