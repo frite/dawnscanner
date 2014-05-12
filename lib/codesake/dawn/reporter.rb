@@ -229,9 +229,15 @@ module Codesake
       def ascii_plain_report
 
         $logger.log "scanning #{@engine.target}"
-        $logger.log "#{@engine.name} v#{@engine.get_mvc_version} detected" unless @engine.name == "Gemfile.lock"
-        $logger.log "#{@engine.force} v#{@engine.get_mvc_version} detected" if @engine.name == "Gemfile.lock"
-        $logger.log "applying all security checks"
+        unless @engine.disable_dependency_checks
+          $logger.log "#{@engine.name} v#{@engine.get_mvc_version} detected" unless @engine.name == "Gemfile.lock"
+          $logger.log "#{@engine.force} v#{@engine.get_mvc_version} detected" if @engine.name == "Gemfile.lock"
+        else
+          $logger.log "#{@engine.name} (unknown version) detected" unless @engine.name == "Gemfile.lock"
+          $logger.log "#{@engine.force} (unknown version) detected" if @engine.name == "Gemfile.lock"
+        end
+        $logger.log "applying all security checks" unless @engine.disable_dependency_checks
+        $logger.log "disabling all security checks about gem dependencies since no Gemfile.lock was available. Applying all other security checks" if @engine.disable_dependency_checks
         if @ret
           $logger.log "#{@engine.applied_checks} security checks applied - #{@engine.skipped_checks} security checks skipped"
         else

@@ -44,6 +44,8 @@ module Codesake
       attr_reader   :applied_checks
       attr_reader   :skipped_checks
 
+      attr_accessor :disable_dependency_checks
+
       def initialize(dir=nil, name="", options={})
         @name = name
         @scan_start = Time.now
@@ -63,6 +65,7 @@ module Codesake
         @applied_checks = 0
         @skipped_checks = 0
         @gemfile_lock_sudo = false
+        @disable_dependency_checks = false
 
         set_target(dir) unless dir.nil?
         @ruby_version = get_ruby_version if dir.nil?
@@ -80,7 +83,7 @@ module Codesake
         $logger.warn "pattern matching security checks are disabled for Gemfile.lock scan" if @name == "Gemfile.lock"
         $logger.warn "combo security checks are disabled for Gemfile.lock scan" if @name == "Gemfile.lock"
         debug_me "engine is in debug mode" 
-        
+
         if @name == "Gemfile.lock" && ! options[:guessed_mvc].nil?
           # since all checks relies on @name a Gemfile.lock engine must
           # impersonificate the engine for the mvc it was detected
@@ -92,13 +95,6 @@ module Codesake
           @gemfile_lock_sudo = true
         end
 
-        # FIXME.20140325
-        #
-        # I comment out this call. knowledge base must be called explicitly
-        # since it's now possible to pass an array saying check families to be
-        # loaded.
-        #
-        # load_knowledge_base
       end
 
       def detect_views
@@ -162,10 +158,10 @@ module Codesake
       def load_knowledge_base(enabled_checks=[])
         debug_me("load_knowledge_base called. Enabled checks are: #{enabled_checks}")
         if @name == "Gemfile.lock"
-          @checks = Codesake::Dawn::KnowledgeBase.new({:enabled_checks=>enabled_checks}).all if @force.empty?
-          @checks = Codesake::Dawn::KnowledgeBase.new({:enabled_checks=>enabled_checks}).all_by_mvc(@force) unless @force.empty? 
+          @checks = Codesake::Dawn::KnowledgeBase.new({:enabled_checks=>enabled_checks, :disable_dependency_checks=>@disable_dependency_checks}).all if @force.empty?
+          @checks = Codesake::Dawn::KnowledgeBase.new({:enabled_checks=>enabled_checks, :disable_dependency_checks=>@disable_dependency_checks}).all_by_mvc(@force) unless @force.empty?
         else
-          @checks = Codesake::Dawn::KnowledgeBase.new({:enabled_checks=>enabled_checks}).all_by_mvc(@name) 
+          @checks = Codesake::Dawn::KnowledgeBase.new({:enabled_checks=>enabled_checks, :disable_dependency_checks=>@disable_dependency_checks}).all_by_mvc(@name)
 
         end
         debug_me("#{@checks.count} checks loaded")
@@ -202,6 +198,8 @@ module Codesake
       end
 
       def can_apply?
+        debug_me("target_is_dir? = #{target_is_dir?}")
+        debug_me("is_good_mvc? = #{is_good_mvc?}")
         target_is_dir? && is_good_mvc?
       end
 
@@ -294,13 +292,13 @@ module Codesake
           unless ((check.kind == Codesake::Dawn::KnowledgeBase::PATTERN_MATCH_CHECK || check.kind == Codesake::Dawn::KnowledgeBase::COMBO_CHECK ) && @gemfile_lock_sudo)
 
             @applied << { :name => name }
-            debug_me "applying check #{check.name}" 
+            debug_me "applying check #{check.name}"
             @applied_checks += 1
 
             check.ruby_version = @ruby_version[:version]
             check.detected_ruby  = @ruby_version if check.kind == Codesake::Dawn::KnowledgeBase::RUBY_VERSION_CHECK
             check.dependencies = self.connected_gems if check.kind == Codesake::Dawn::KnowledgeBase::DEPENDENCY_CHECK
-            check.root_dir = self.target if check.kind  == Codesake::Dawn::KnowledgeBase::PATTERN_MATCH_CHECK 
+            check.root_dir = self.target if check.kind  == Codesake::Dawn::KnowledgeBase::PATTERN_MATCH_CHECK
             check.options = {:detected_ruby => self.ruby_version, :dependencies => self.connected_gems, :root_dir => self.target } if check.kind == Codesake::Dawn::KnowledgeBase::COMBO_CHECK
             check_vuln = check.vuln?
 

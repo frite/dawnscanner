@@ -154,7 +154,7 @@ trap("INT")   { $logger.die('[INTERRUPTED]') }
 $logger.die("missing target") if target.nil? && options[:gemfile_name].empty?
 $logger.die("invalid directory (#{target})") if options[:gemfile_name].empty?  &&! Codesake::Dawn::Core.is_good_target?(target)
 $logger.die("if scanning Gemfile.lock file you must not force target MVC using one from -r, -s or -p flag") if ! options[:mvc].empty? && options[:gemfile_scan]
-$logger.log("security check enabled: #{options[:enabled_checks]}") if options[:debug]
+$logger.debug("security check enabled: #{options[:enabled_checks]}") if options[:debug]
 
 
 ## MVC auto detect.
@@ -163,8 +163,8 @@ $logger.log("security check enabled: #{options[:enabled_checks]}") if options[:d
 unless options[:gemfile_scan]
   begin
     if options[:mvc].empty?
-      engine = Codesake::Dawn::Core.detect_mvc(target)
-      $logger.log("using #{engine.class.name} engine via autodect") if options[:debug]
+      engine = Codesake::Dawn::Core.detect_mvc(target, options[:debug])
+      $logger.debug("using #{engine.class.name} engine via autodect") if options[:debug]
     else
       engine = Codesake::Dawn::Rails.new(target)      if options[:mvc] == :rails
       engine = Codesake::Dawn::Sinatra.new(target)    if options[:mvc] == :sinatra
@@ -195,12 +195,17 @@ end
 
 $logger.die "missing target framework option" if engine.nil?
 $logger.warn "this is a development Codesake::Dawn version" if Codesake::Dawn::RELEASE == "(development)"
-$logger.die "nothing to do on #{target}" if ! options[:gemfile_scan] && ! engine.can_apply? 
+$logger.die "nothing to do on #{target}" if ! options[:gemfile_scan] && !engine.disable_dependency_checks && ! engine.can_apply?
+
+if engine.disable_dependency_checks
+  $logger.warn "MVC was detected using only Gemfile, no version information are available"
+  $logger.warn "checks against third party gem vulnerabilities will be disabled"
+end
 
 engine.load_knowledge_base(options[:enabled_checks])
 ret = engine.apply_all
 
-if options[:output] == "count" 
+if options[:output] == "count"
   puts (ret)? engine.vulnerabilities.count : "-1" unless options[:output] == "json"
   puts (ret)? {:status=>"OK", :vulnerabilities_count=>engine.count_vulnerabilities}.to_json : {:status=>"KO", :vulnerabilities_count=>-1}.to_json
   Kernel.exit(0)
