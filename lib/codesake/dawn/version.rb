@@ -1,9 +1,9 @@
 module Codesake
   module Dawn
-    VERSION = "1.1.gb12380c"
+    VERSION = "1.1.g680ef83"
     CODENAME = "Lightning McQueen"
     RELEASE = "(development)"
-    BUILD = "14"
-    COMMIT = "gb12380c"
+    BUILD = "30"
+    COMMIT = "g680ef83"
   end
 end
