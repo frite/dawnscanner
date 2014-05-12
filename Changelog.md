@@ -5,7 +5,10 @@ It supports [Sinatra](http://www.sinatrarb.com),
 [Padrino](http://www.padrinorb.com) and [Ruby on Rails](http://rubyonrails.org)
 frameworks.
 
-_latest update: Fri Apr 18 07:55:10 CEST 2014_
+_latest update: Mon May 12 18:32:15 CEST 2014_
+
+* Now dependency checks are disabled by default if no Gemfile.lock is present
+  and the Gemfile file is used instead.
 
 * Fix issue #62 about codesake-dawn config filename
 * Adding a check for CVE-2013-2105: HTML injection in show_in_browser rubygem
