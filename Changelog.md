@@ -5,11 +5,11 @@ It supports [Sinatra](http://www.sinatrarb.com),
 [Padrino](http://www.padrinorb.com) and [Ruby on Rails](http://rubyonrails.org)
 frameworks.
 
-_latest update: Mon May 12 18:32:15 CEST 2014_
+_latest update: Thu Jun 12 2014 10:03:01 CEST_
 
+* Renamed Codesake::Dawn::Core class into Codesake::Dawn::Utils
 * Now dependency checks are disabled by default if no Gemfile.lock is present
   and the Gemfile file is used instead.
-
 * Fix issue #62 about codesake-dawn config filename
 * Adding a check for CVE-2013-2105: HTML injection in show_in_browser rubygem
 
