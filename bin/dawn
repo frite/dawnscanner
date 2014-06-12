@@ -58,7 +58,7 @@ opts.quiet=true
 engine  = nil
 
 
-options = Codesake::Dawn::Core.read_conf(Codesake::Dawn::Core.find_conf(true))
+options = Codesake::Dawn::Utils.read_conf(Codesake::Dawn::Utils.find_conf(true))
 check = ""
 guess = {:name=>"", :version=>"", :connected_gems=>[]}
 
@@ -69,7 +69,7 @@ opts.each do |opt, val|
     puts "#{Codesake::Dawn::VERSION} (build: #{Codesake::Dawn::BUILD}) [#{Codesake::Dawn::CODENAME}]"
     Kernel.exit(0)
   when '--config-file'
-    options = Codesake::Dawn::Core.read_conf(val)
+    options = Codesake::Dawn::Utils.read_conf(val)
   when '--disable-cve-bulletins'
     options[:enabled_checks].delete(:cve_bulletin)
   when '--disable-code-quality'
@@ -111,7 +111,7 @@ opts.each do |opt, val|
     options[:gemfile_scan] = true
     unless val.empty?
       options[:gemfile_name] = val
-      guess = Codesake::Dawn::Core.guess_mvc(val)
+      guess = Codesake::Dawn::Utils.guess_mvc(val)
     end
   when '--verbose'
     options[:verbose]=true
@@ -129,7 +129,7 @@ opts.each do |opt, val|
     Kernel.exit(0)
 
   when '--list-knowledge-base'
-    puts Codesake::Dawn::Core.dump_knowledge_base(options[:verbose])
+    puts Codesake::Dawn::Utils.dump_knowledge_base(options[:verbose])
     Kernel.exit(0)
   when '--list-known-framework'
     puts "Ruby MVC framework supported by #{APPNAME}:"
@@ -138,13 +138,13 @@ opts.each do |opt, val|
     end
     Kernel.exit(0)
   when '--help'
-    Kernel.exit(Codesake::Dawn::Core.help)
+    Kernel.exit(Codesake::Dawn::Utils.help)
   end
 end
 rescue GetoptLong::InvalidOption => e
   $logger.helo APPNAME, Codesake::Dawn::VERSION
   $logger.err e.message
-  Kernel.exit(Codesake::Dawn::Core.help)
+  Kernel.exit(Codesake::Dawn::Utils.help)
 end
 
 target=ARGV.shift
@@ -152,7 +152,7 @@ target=ARGV.shift
 $logger.helo APPNAME, Codesake::Dawn::VERSION
 trap("INT")   { $logger.die('[INTERRUPTED]') }
 $logger.die("missing target") if target.nil? && options[:gemfile_name].empty?
-$logger.die("invalid directory (#{target})") if options[:gemfile_name].empty?  &&! Codesake::Dawn::Core.is_good_target?(target)
+$logger.die("invalid directory (#{target})") if options[:gemfile_name].empty?  &&! Codesake::Dawn::Utils.is_good_target?(target)
 $logger.die("if scanning Gemfile.lock file you must not force target MVC using one from -r, -s or -p flag") if ! options[:mvc].empty? && options[:gemfile_scan]
 $logger.debug("security check enabled: #{options[:enabled_checks]}") if options[:debug]
 
@@ -163,7 +163,7 @@ $logger.debug("security check enabled: #{options[:enabled_checks]}") if options[
 unless options[:gemfile_scan]
   begin
     if options[:mvc].empty?
-      engine = Codesake::Dawn::Core.detect_mvc(target, options[:debug])
+      engine = Codesake::Dawn::Utils.detect_mvc(target, options[:debug])
       $logger.debug("using #{engine.class.name} engine via autodect") if options[:debug]
     else
       engine = Codesake::Dawn::Rails.new(target)      if options[:mvc] == :rails

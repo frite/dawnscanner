@@ -23,6 +23,8 @@ _latest update: Mon Mar 31 13:01:21 CEST 2014_
   basic layout to customize report
 * Add a ruby deprecation check, accordingly to
   https://bugs.ruby-lang.org/projects/ruby/wiki/ReleaseEngineering
+* add source code metrics gathering (lines of code, lines of comments,
+  cyclomatic complexity index, ...)
 
 ## Version 1.3.0
 

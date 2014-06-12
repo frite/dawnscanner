@@ -229,7 +229,7 @@ module Codesake
     # XXX: Check if it best using a singleton here
     class KnowledgeBase
 
-      include Codesake::Dawn::Utils
+      include Codesake::Dawn::Debug
 
       DEPENDENCY_CHECK    = :dependency_check
       PATTERN_MATCH_CHECK = :pattern_match_check
