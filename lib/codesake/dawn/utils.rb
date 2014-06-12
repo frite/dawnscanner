@@ -2,7 +2,7 @@ require "yaml"
 
 module Codesake
   module Dawn
-    class Core
+    class Utils
 
       # TODO.20140326
       # All those methods must moved from here to Util class and a
