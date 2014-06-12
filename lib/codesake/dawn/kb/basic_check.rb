@@ -5,7 +5,7 @@ module Codesake
     module Kb
       module BasicCheck
 
-        include Codesake::Dawn::Utils
+        include Codesake::Dawn::Debug
 
         attr_reader :name
         attr_reader :cvss

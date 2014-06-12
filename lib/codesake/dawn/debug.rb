@@ -1,6 +1,6 @@
 module Codesake
   module Dawn
-    module Utils
+    module Debug
 
       def debug_me_and_return_true(msg)
         __debug_me_and_return(msg, true)

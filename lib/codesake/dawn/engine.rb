@@ -3,7 +3,7 @@ require 'bundler'
 module Codesake
   module Dawn
     module Engine
-      include Codesake::Dawn::Utils
+      include Codesake::Dawn::Debug
 
       attr_reader :target
       attr_reader :name
