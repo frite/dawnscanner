@@ -16,7 +16,6 @@ module Codesake
 
         def initialize(options={})
           @filename = ""
-          @stats    = {}
           @debug    = false
           @total_lines = 0
           @empty_lines = 0
