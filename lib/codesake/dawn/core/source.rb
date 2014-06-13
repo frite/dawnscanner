@@ -12,22 +12,24 @@ module Codesake
       class Source
         include Codesake::Dawn::Debug
 
-        attr_reader :stats
+        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity
 
         def initialize(options={})
           @filename = ""
           @stats    = {}
           @debug    = false
+          @total_lines = 0
+          @empty_lines = 0
+          @comment_lines = 0
+          @cyclomatic_complexity = 1
 
           @filename = options[:filename] unless options[:filename].nil?
           @debug = options[:debug] unless options[:debug].nil?
 
           @raw_file_content = File.readlines(@filename)
           @ast = RubyParser.new.parse(File.binread(@filename), @filename)
-          debug_me(@ast)
-
           calc_stats
-          @stats[:cyclomatic_complexity] = calc_cyclomatic_complexity
+          @cyclomatic_complexity = calc_cyclomatic_complexity
 
         end
 
@@ -59,9 +61,9 @@ module Codesake
             nl += 1 if line.strip.chomp.start_with?('\n') || line.strip.chomp.start_with?('\r') || line.chomp.empty?
             lines +=1
           end
-          @stats[:total_lines] = lines
-          @stats[:empty_lines] = nl
-          @stats[:comment_lines] = comment
+          @total_lines = lines
+          @empty_lines = nl
+          @comment_lines = comment
 
           @stats
         end

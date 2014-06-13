@@ -41,18 +41,18 @@ EOF
     File.delete("./test.rb")
   end
   it "calculates the number of lines of code" do
-    @source.stats[:total_lines].should == 25
+    @source.total_lines.should == 25
   end
 
   it "calculates the number of empty lines" do
-    @source.stats[:empty_lines].should == 4
+    @source.empty_lines.should == 4
   end
   it "calculates the number of commented lines" do
-    @source.stats[:comment_lines].should == 2
+    @source.comment_lines.should == 2
   end
 
   it "calculates the cyclomatic complexity index" do
-    @source.stats[:cyclomatic_complexity].should == 6
+    @source.cyclomatic_complexity.should == 6
   end
 
 end
