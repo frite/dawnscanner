@@ -27,10 +27,26 @@ module Codesake
           debug_me(@ast)
 
           calc_stats
+          @stats[:cyclomatic_complexity] = calc_cyclomatic_complexity
+
         end
 
 
         private
+          def calc_cyclomatic_complexity
+            ret = 1
+            @ast.deep_each do |exp|
+              ret +=1 if is_a_branch?(exp.sexp_type)
+            end
+            ret
+          end
+          def is_a_branch?(type)
+            branch_types = [:if, :if_mod, :unless, :unless_mod, :when, :elsif, :ifop,
+                            :while, :while_mod, :until, :until_mod, :for, :do_block, :brace_block, 
+                            :rescue, :rescue_mod]
+            return true if branch_types.include?(type)
+          end
+
 
         def calc_stats
           return {} if @raw_file_content.nil?

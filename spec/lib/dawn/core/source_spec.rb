@@ -25,6 +25,10 @@ class Test
      puts "here"
    end
   end
+
+  def another_method
+    case X; when 1; A; when 2; B; when 3; C; when 4; D end
+  end
 end
 EOF
   File.open("./test.rb", "w") do |f|
@@ -37,18 +41,18 @@ EOF
     File.delete("./test.rb")
   end
   it "calculates the number of lines of code" do
-    @source.stats[:total_lines].should == 21
+    @source.stats[:total_lines].should == 25
   end
 
   it "calculates the number of empty lines" do
-    @source.stats[:empty_lines].should == 3
+    @source.stats[:empty_lines].should == 4
   end
   it "calculates the number of commented lines" do
     @source.stats[:comment_lines].should == 2
   end
 
   it "calculates the cyclomatic complexity index" do
-    @source.stats[:cyclomatic_complexity].should == 3
+    @source.stats[:cyclomatic_complexity].should == 6
   end
 
 end
