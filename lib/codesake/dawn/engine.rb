@@ -77,6 +77,7 @@ module Codesake
 
         if $logger.nil?
           $logger  = Codesake::Commons::Logging.instance
+            $logger.toggle_syslog
           $logger.helo "dawn-engine", Codesake::Dawn::VERSION
 
         end

@@ -13,6 +13,7 @@ module Codesake
         include Codesake::Dawn::Debug
 
         attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity
+        attr_accessor :kind
 
         def initialize(options={})
           @filename = ""
@@ -25,13 +26,30 @@ module Codesake
           @filename = options[:filename] unless options[:filename].nil?
           @debug = options[:debug] unless options[:debug].nil?
 
+          if $logger.nil?
+            $logger  = Codesake::Commons::Logging.instance
+            $logger.toggle_syslog
+            $logger.helo "dawn-source", Codesake::Dawn::VERSION
+          end
+
           @raw_file_content = File.readlines(@filename)
+
           @ast = RubyParser.new.parse(File.binread(@filename), @filename)
           calc_stats
           @cyclomatic_complexity = calc_cyclomatic_complexity
 
         end
 
+        def find_sinks
+          ret = []
+          @ast.deep_each do |sexp|
+            if sexp.sexp_type == :attrasgn || sexp.sexp_type == :iasgn
+              debug_me(sexp.sexp_body)
+              debug_me(sexp.line)
+              # body = sexp.sexp_body.to_a
+            end
+          end
+        end
 
         private
           def calc_cyclomatic_complexity
