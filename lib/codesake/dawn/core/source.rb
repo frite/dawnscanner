@@ -59,8 +59,10 @@ module Codesake
                 sink[:type] = :call
                 sink[:sources_count] = 0
                 sink[:sources] = []
+                debug_me assign_root[1]
                 assign_root[1].each_sexp do |call_element|
-                  sink[:source_no] += 1
+                  sink[:sources_count] += 1
+                  debug_me call_element
                   sink[:sources] << call_element.sexp_body.last.sexp_body.sexp_type
                 end
 
