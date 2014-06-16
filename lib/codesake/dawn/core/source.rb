@@ -55,22 +55,22 @@ module Codesake
               sink[:filename] = @filename
               sink[:line]     = sexp.line
               # Trying to understand a call like var = a_method_here(params[1], params[2], ...)
-              if assign_root[1].sexp_type == :call
+              if assign_root[1].class == :Sexp && assign_root[1].sexp_type == :call
                 sink[:type] = :call
                 sink[:sources_count] = 0
                 sink[:sources] = []
-                debug_me assign_root[1]
                 assign_root[1].each_sexp do |call_element|
-                  sink[:sources_count] += 1
-                  debug_me call_element
-                  sink[:sources] << call_element.sexp_body.last.sexp_body.sexp_type
+                  if call_element.flatten.include?(':params')
+                    sink[:sources_count] += 1
+                    sink[:sources] << call_element.sexp_body.last.sexp_body.sexp_type
+                  end
                 end
 
               end
 
               # body = sexp.sexp_body.to_a
+              ret << sink
             end
-            ret << sink
           end
           debug_me "#{ret.count} sinks found: #{ret}"
           ret
