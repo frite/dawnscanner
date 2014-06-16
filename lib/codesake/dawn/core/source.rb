@@ -40,15 +40,38 @@ module Codesake
 
         end
 
+        def ast
+          (@debug)? @ast : nil
+        end
+
         def find_sinks
           ret = []
           @ast.deep_each do |sexp|
-            if sexp.sexp_type == :attrasgn || sexp.sexp_type == :iasgn
-              debug_me(sexp.sexp_body)
-              debug_me(sexp.line)
+            if (sexp.sexp_type == :attrasgn || sexp.sexp_type == :iasgn || sexp.sexp_type == :lasgn) && sexp.sexp_body.flatten.include?(:params)
+              sink={}
+
+              assign_root = sexp.sexp_body
+              sink[:target]   = assign_root[0]
+              sink[:filename] = @filename
+              sink[:line]     = sexp.line
+              # Trying to understand a call like var = a_method_here(params[1], params[2], ...)
+              if assign_root[1].sexp_type == :call
+                sink[:type] = :call
+                sink[:sources_count] = 0
+                sink[:sources] = []
+                assign_root[1].each_sexp do |call_element|
+                  sink[:source_no] += 1
+                  sink[:sources] << call_element.sexp_body.last.sexp_body.sexp_type
+                end
+
+              end
+
               # body = sexp.sexp_body.to_a
             end
+            ret << sink
           end
+          debug_me "#{ret.count} sinks found: #{ret}"
+          ret
         end
 
         private
@@ -61,7 +84,7 @@ module Codesake
           end
           def is_a_branch?(type)
             branch_types = [:if, :if_mod, :unless, :unless_mod, :when, :elsif, :ifop,
-                            :while, :while_mod, :until, :until_mod, :for, :do_block, :brace_block, 
+                            :while, :while_mod, :until, :until_mod, :for, :do_block, :brace_block,
                             :rescue, :rescue_mod]
             return true if branch_types.include?(type)
           end
