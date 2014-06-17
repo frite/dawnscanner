@@ -55,4 +55,8 @@ EOF
     @source.cyclomatic_complexity.should == 6
   end
 
+  it "autodetect the kind of source" do
+    @source.auto_detect.should == :class
+  end
+
 end

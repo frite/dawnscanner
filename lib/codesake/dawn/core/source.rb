@@ -12,7 +12,14 @@ module Codesake
       class Source
         include Codesake::Dawn::Debug
 
-        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity
+        SCRIPT      = :script
+        CLASS       = :class
+        CONTROLLER  = :controller
+        VIEW        = :view
+        MODEL       = :model
+        HELPER      = :helper
+
+        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind
         attr_accessor :kind
 
         def initialize(options={})
@@ -22,9 +29,11 @@ module Codesake
           @empty_lines = 0
           @comment_lines = 0
           @cyclomatic_complexity = 1
+          @kind = SCRIPT
 
-          @filename = options[:filename] unless options[:filename].nil?
-          @debug = options[:debug] unless options[:debug].nil?
+          @filename   = options[:filename]  unless options[:filename].nil?
+          @debug      = options[:debug]     unless options[:debug].nil?
+          @kind       = options[:kind]      unless options[:kind].nil?
 
           if $logger.nil?
             $logger  = Codesake::Commons::Logging.instance
@@ -48,6 +57,19 @@ module Codesake
           (@debug)? @ast : nil
         end
 
+        def auto_detect
+
+          # rails && padrino
+          @kind = VIEW        if @filename.include?("app/views") && (@filename.extname == ".haml" || @filename.extname == ".erb")
+          @kind = CONTROLLER  if @filename.include?("app/controller") && (@filename.extname == ".rb")
+          @kind = MODEL       if @filename.include?("app/models") && (@filename.extname == ".rb")
+          @kind = HELPER      if @filename.include?("app/helpers") && (@filename.extname == ".rb")
+
+          # padrino models
+          @kind = MODEL       if @filename.include?("models/") && (@filename.extname == ".rb")
+          @kind
+        end
+
         def find_sinks
           ret = []
           @ast.deep_each do |sexp|
@@ -66,7 +88,8 @@ module Codesake
                 assign_root[1].each_sexp do |call_element|
                   if call_element.flatten.include?(:params)
                     sink[:sources_count] += 1
-                    sink[:sources] << call_element.sexp_body.last.sexp_body.sexp_type
+                    debug_me call_element.sexp_body.last
+                    sink[:sources] << call_element.sexp_body.last.sexp_body.sexp_type if call_element.sexp_body.last.respond_to?(:sexp_body)
                   end
                 end
 
