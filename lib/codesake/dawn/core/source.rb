@@ -1,4 +1,6 @@
 require 'ruby_parser'
+require 'haml'
+require 'erb'
 
 module Codesake
   module Dawn
@@ -19,7 +21,7 @@ module Codesake
         MODEL       = :model
         HELPER      = :helper
 
-        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind
+        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind, :filename
         attr_accessor :kind
 
         def initialize(options={})
@@ -35,22 +37,36 @@ module Codesake
           @debug      = options[:debug]     unless options[:debug].nil?
           @kind       = options[:kind]      unless options[:kind].nil?
 
+          @raw_file_content = File.readlines(@filename)
+          @kind = auto_detect if ! options[:auto_detect].nil? && options[:auto_detect ]
+
           if $logger.nil?
             $logger  = Codesake::Commons::Logging.instance
             $logger.toggle_syslog
             $logger.helo "dawn-source", Codesake::Dawn::VERSION
           end
 
-          @raw_file_content = File.readlines(@filename)
 
-          @ast = RubyParser.new.parse(File.binread(@filename), @filename)
+          @ast = RubyParser.new.parse(File.binread(@filename), @filename) if is_ruby?
+          @ast = RubyParser.new.process(Haml::Engine.new(File.read(@filename)).precompiled, @filename) if is_haml?
+          @ast = RubyParser.new.process(Erb.new(File.read(@filename)).src, @filename) if is_erb?
+          debug_me "AST is #{@ast}"
           calc_stats
           @cyclomatic_complexity = calc_cyclomatic_complexity
 
         end
 
-        def stats
-          $logger.log "File: #{File.basename(@filename)} - total lines: #{@total_lines} (empty lines: #{@empty_lines} + comments: #{@comment_lines}); cyclomatic complexity: #{@cyclomatic_complexity}"
+        def is_erb?
+          (File.extname(@filename) == ".erb")
+        end
+        def is_haml?
+          (File.extname(@filename) == ".haml")
+        end
+        def is_ruby?
+          (File.extname(@filename) == ".rb") || is_script?
+        end
+        def is_script?
+          (@raw_file_content.nil?)? false : @raw_file_content.include?("#!/usr/bin/env ruby\n")
         end
 
         def ast
@@ -60,14 +76,16 @@ module Codesake
         def auto_detect
 
           # rails && padrino
-          @kind = VIEW        if @filename.include?("app/views") && (@filename.extname == ".haml" || @filename.extname == ".erb")
-          @kind = CONTROLLER  if @filename.include?("app/controller") && (@filename.extname == ".rb")
-          @kind = MODEL       if @filename.include?("app/models") && (@filename.extname == ".rb")
-          @kind = HELPER      if @filename.include?("app/helpers") && (@filename.extname == ".rb")
+          ret = VIEW        if @filename.include?("app/views") && (File.extname(@filename) == ".haml" || File.extname(@filename) == ".erb")
+          ret = CONTROLLER  if @filename.include?("app/controller") && (File.extname(@filename) == ".rb")
+          ret = MODEL       if @filename.include?("app/models") && (File.extname(@filename) == ".rb")
+          ret = HELPER      if @filename.include?("app/helpers") && (File.extname(@filename) == ".rb")
 
           # padrino models
-          @kind = MODEL       if @filename.include?("models/") && (@filename.extname == ".rb")
-          @kind
+          ret = MODEL       if @filename.include?("models/") && (File.extname(@filename) == ".rb")
+
+          ret = SCRIPT      if is_script?
+          ret
         end
 
         def find_sinks
