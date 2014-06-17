@@ -20,6 +20,8 @@ module Codesake
         VIEW        = :view
         MODEL       = :model
         HELPER      = :helper
+        MAIN_APP    = :main_app
+
 
         attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind, :filename
         attr_accessor :kind
@@ -36,6 +38,7 @@ module Codesake
           @filename   = options[:filename]  unless options[:filename].nil?
           @debug      = options[:debug]     unless options[:debug].nil?
           @kind       = options[:kind]      unless options[:kind].nil?
+          @mvc        = options[:mvc]       unless options[:mvc].nil?
 
           @raw_file_content = File.readlines(@filename)
           @kind = auto_detect if ! options[:auto_detect].nil? && options[:auto_detect ]
@@ -85,6 +88,7 @@ module Codesake
           ret = MODEL       if @filename.include?("models/") && (File.extname(@filename) == ".rb")
 
           ret = SCRIPT      if is_script?
+          ret = MAIN_APP    if File.basename(@filename) == "app.rb" && (@mvc == :padrino || @mvc == :sinatra)
           ret
         end
 
