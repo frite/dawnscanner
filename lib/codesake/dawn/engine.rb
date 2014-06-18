@@ -46,6 +46,9 @@ module Codesake
 
       attr_accessor :disable_dependency_checks
 
+      attr_reader   :filenames
+      attr_reader   :sources
+
       def initialize(dir=nil, name="", options={})
         @name = name
         @scan_start = Time.now
@@ -83,8 +86,9 @@ module Codesake
         end
         $logger.warn "pattern matching security checks are disabled for Gemfile.lock scan" if @name == "Gemfile.lock"
         $logger.warn "combo security checks are disabled for Gemfile.lock scan" if @name == "Gemfile.lock"
-        debug_me "engine is in debug mode" 
+        debug_me "engine is in debug mode"
 
+        @filenames = collect_filenames
         if @name == "Gemfile.lock" && ! options[:guessed_mvc].nil?
           # since all checks relies on @name a Gemfile.lock engine must
           # impersonificate the engine for the mvc it was detected
@@ -98,6 +102,17 @@ module Codesake
 
       end
 
+      def collect_filenames
+        rb_files = File.join("#{@target}", "**/*.rb")
+        erb_files = File.join("#{@target}", "**/*.erb")
+        haml_files = File.join("#{@target}", "**/*.haml")
+        @filenames = Dir.glob(rb_files)
+        @filenames += Dir.glob(erb_files)
+        @filenames += Dir.glob(haml_files)
+
+        @filenames
+
+      end
       def detect_views
         []
       end
