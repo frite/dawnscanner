@@ -22,7 +22,7 @@ module Codesake
         @views = []
         @controllers = []
         @filenames.each do |ff|
-          s = Codesake::Dawn::Core::Source.new({:filename=>ff, :debug=>true, :auto_detect=>true, :mvc=>:sinatra})
+          s = Codesake::Dawn::Core::Source.new({:filename=>ff, :debug=>@debug, :auto_detect=>true, :mvc=>:sinatra})
           s.find_sinks
           @appname      = ff if s.kind == Codesake::Dawn::Core::Source::MAIN_APP
           @views        << s if s.kind == Codesake::Dawn::Core::Source::VIEW
@@ -39,6 +39,12 @@ module Codesake
       # e.precompiled  and grep for format_script
 
 
+      def top_10_most_complex_sources
+        debug_me "here"
+        a = @sources.sort_by {|k| k.cyclomatic_complexity}
+        debug_me a
+        a[0..9]
+      end
     end
   end
 end

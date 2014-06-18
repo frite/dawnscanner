@@ -5,8 +5,11 @@ require 'codesake-dawn'
 raise "Don't use this tool unless you really want to debug dawn" if ENV['CODESAKE_DAWN_DEBUG'].nil?
 raise "Missing ruby script to parse" if ARGV.count != 1
 
-e = Codesake::Dawn::Sinatra.new(ARGV[0], {:debug=>true})
+e = Codesake::Dawn::Sinatra.new(ARGV[0], {:debug=>false})
 $logger.log e.total_lines
+e.top_10_most_complex_sources.each do |f|
+  $logger.log "#{f.filename} (#{f.cyclomatic_complexity})"
+end
 # s = Codesake::Dawn::Core::Source.new({:filename=>ARGV[0], :debug=>true, :auto_detect=>true, :mvc=>:padrino})
 # $logger.log "Statistics for #{File.basename(s.filename)}"
 # $logger.log "Total lines: #{s.total_lines} (empty: #{s.empty_lines}, comments: #{s.comment_lines})"
