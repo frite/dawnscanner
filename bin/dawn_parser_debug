@@ -4,6 +4,7 @@ require 'codesake-dawn'
 
 raise "Don't use this tool unless you really want to debug dawn" if ENV['CODESAKE_DAWN_DEBUG'].nil?
 raise "Missing ruby script to parse" if ARGV.count != 1
+raise "I need a directory to inspect" unless File.dir?(ARGV[0])
 
 e = Codesake::Dawn::Sinatra.new(ARGV[0], nil, {:debug=>true})
 $logger.log e.total_lines
