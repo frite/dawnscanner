@@ -14,9 +14,9 @@ module Codesake
       attr_reader :mount_point
 
       attr_reader :total_lines
-      def initialize(dir=nil, mp=nil, options={})
-        super(dir, "sinatra", options)
-        @mount_point = (mp.nil?)? "" : mp
+      def initialize(options={})
+        super(options)
+        @mount_point = (options[:mp].nil?)? "" : options[:mp]
         @total_lines = 0
         @sources = []
         @views = []
@@ -40,9 +40,7 @@ module Codesake
 
 
       def top_10_most_complex_sources
-        debug_me "here"
         a = @sources.sort {|k,j| j.cyclomatic_complexity <=> k.cyclomatic_complexity}
-        debug_me a
         a[0..9]
       end
     end

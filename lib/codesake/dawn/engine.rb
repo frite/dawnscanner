@@ -49,8 +49,9 @@ module Codesake
       attr_reader   :filenames
       attr_reader   :sources
 
-      def initialize(dir=nil, name="", options={})
-        @name = name
+      def initialize(options={})
+        @name = "noname"
+        @name = options[:name] unless options[:name].nil?
         @scan_start = Time.now
         @scan_stop = @scan_start
         @mvc_version = ""
@@ -70,8 +71,8 @@ module Codesake
         @gemfile_lock_sudo = false
         @disable_dependency_checks = false
 
-        set_target(dir) unless dir.nil?
-        @ruby_version = get_ruby_version if dir.nil?
+        set_target(options[:target]) unless options[:target].nil?
+        @ruby_version = get_ruby_version if options[:target].nil?
         @gemfile_lock = options[:gemfile_name] unless options[:gemfile_name].nil? 
 
         @views        = detect_views 

@@ -6,8 +6,8 @@ module Codesake
 
       attr_reader :apps
 
-      def initialize(dir=nil)
-        super(dir, "padrino", {:debug=>false}) 
+      def initialize(options={})
+        super(options)
         @apps = detect_apps
       end
 
@@ -53,7 +53,7 @@ module Codesake
                 end
 
                 target = File.dirname(sinatra_app_rb )
-                apps << Codesake::Dawn::Sinatra.new(target, mp)
+                apps << Codesake::Dawn::Sinatra.new({:target=>target, :mp=>mp, :debug=>@debug})
               end
             rescue Racc::ParseError => e
               debug_me(e.message)

@@ -6,12 +6,9 @@ module Codesake
       include Codesake::Dawn::Engine
 
 
-      def initialize(dir=nil)
-        super(dir, "rails")
+      def initialize(options={})
+        super(options)
       end
-      
-     
-
     end
   end
 end
