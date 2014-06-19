@@ -37,7 +37,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency ('coveralls')
 
   gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rspec', "~> 2.13.0"
   gem.add_development_dependency('tomdoc')
   gem.add_development_dependency('aruba')
   gem.add_development_dependency('simplecov')
