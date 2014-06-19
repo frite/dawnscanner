@@ -7,6 +7,7 @@ raise "Missing ruby script to parse" if ARGV.count != 1
 raise "I need a directory to inspect" unless File.directory?(ARGV[0])
 
 e = Codesake::Dawn::Sinatra.new({:target=>ARGV[0], :debug=>true})
+$logger.log "#{ARGV[0]} - controllers: #{e.controllers.count}, models: #{e.models.count}, views: #{e.views.count}"
 $logger.log e.total_lines
 e.top_10_most_complex_sources.each do |f|
   $logger.log "#{f.filename} (#{f.cyclomatic_complexity})"

@@ -14,6 +14,7 @@ module Codesake
       attr_reader :mount_point
 
       attr_reader :total_lines
+      attr_reader :sources, :views, :controllers, :models;
       def initialize(options={})
         super(options)
         @mount_point = (options[:mp].nil?)? "" : options[:mp]
@@ -21,12 +22,14 @@ module Codesake
         @sources = []
         @views = []
         @controllers = []
+        @models = []
         @filenames.each do |ff|
           s = Codesake::Dawn::Core::Source.new({:filename=>ff, :debug=>@debug, :auto_detect=>true, :mvc=>:sinatra})
           s.find_sinks
           @appname      = ff if s.kind == Codesake::Dawn::Core::Source::MAIN_APP
           @views        << s if s.kind == Codesake::Dawn::Core::Source::VIEW
           @controllers  << s if s.kind == Codesake::Dawn::Core::Source::CONTROLLER
+          @models       << s if s.kind == Codesake::Dawn::Core::Source::MODEL
           @sources      << s
           if s.kind != Codesake::Dawn::Core::Source::VIEW
             @total_lines += s.total_lines
