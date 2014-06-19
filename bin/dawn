@@ -164,11 +164,11 @@ unless options[:gemfile_scan]
   begin
     if options[:mvc].empty?
       engine = Codesake::Dawn::Utils.detect_mvc(target, options[:debug])
-      $logger.debug("using #{engine.class.name} engine via autodect") if options[:debug]
+      $logger.debug("using #{engine.class.name} engine via autodetect") if options[:debug]
     else
-      engine = Codesake::Dawn::Rails.new(target)      if options[:mvc] == :rails
-      engine = Codesake::Dawn::Sinatra.new(target)    if options[:mvc] == :sinatra
-      engine = Codesake::Dawn::Padrino.new(target)    if options[:mvc] == :padrino
+      engine = Codesake::Dawn::Rails.new({:target=>target, :debug=>options[:debug], :name=>"rails"})        if options[:mvc] == :rails
+      engine = Codesake::Dawn::Sinatra.new({:target=>target, :debug=>options[:debug], :name=>"sinatra"})    if options[:mvc] == :sinatra
+      engine = Codesake::Dawn::Padrino.new({:target=>target, :debug=>options[:debug], :name=>"padrino"})    if options[:mvc] == :padrino
     end
   rescue ArgumentError => e
     $logger.err(e.message)

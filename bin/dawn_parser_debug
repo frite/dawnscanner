@@ -6,7 +6,7 @@ raise "Don't use this tool unless you really want to debug dawn" if ENV['CODESAK
 raise "Missing ruby script to parse" if ARGV.count != 1
 raise "I need a directory to inspect" unless File.directory?(ARGV[0])
 
-e = Codesake::Dawn::Sinatra.new(ARGV[0], nil, {:debug=>true})
+e = Codesake::Dawn::Sinatra.new({:target=>ARGV[0], :debug=>true})
 $logger.log e.total_lines
 e.top_10_most_complex_sources.each do |f|
   $logger.log "#{f.filename} (#{f.cyclomatic_complexity})"
