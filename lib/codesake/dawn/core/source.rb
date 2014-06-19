@@ -49,10 +49,12 @@ module Codesake
             $logger.helo "dawn-source", Codesake::Dawn::VERSION
           end
 
+          debug_me "Building #{@filename} AST"
 
           @ast = RubyParser.new.parse(File.binread(@filename), @filename) if is_ruby?
           @ast = RubyParser.new.process(Haml::Engine.new(File.read(@filename)).precompiled, @filename) if is_haml?
-          @ast = RubyParser.new.process(Erb.new(File.read(@filename)).src, @filename) if is_erb?
+          @ast = RubyParser.new.process(ERB.new(File.read(@filename)).src, @filename) if is_erb?
+          $logger.warn "#{@filename} produced an empty AST. File can be either empty or all lines commented out" if @ast.nil?
           debug_me "AST is #{@ast}"
           calc_stats
           @cyclomatic_complexity = calc_cyclomatic_complexity
@@ -93,6 +95,7 @@ module Codesake
         end
 
         def find_sinks
+          return [] if @ast.nil?
           ret = []
           @ast.deep_each do |sexp|
             if (sexp.sexp_type == :attrasgn || sexp.sexp_type == :iasgn || sexp.sexp_type == :lasgn) && sexp.sexp_body.flatten.include?(:params)
@@ -126,6 +129,8 @@ module Codesake
 
         private
           def calc_cyclomatic_complexity
+            return -1 if @ast.nil?
+
             ret = 1
             @ast.deep_each do |exp|
               ret +=1 if is_a_branch?(exp.sexp_type)
