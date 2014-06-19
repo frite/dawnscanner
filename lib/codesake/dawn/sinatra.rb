@@ -41,7 +41,7 @@ module Codesake
 
       def top_10_most_complex_sources
         debug_me "here"
-        a = @sources.sort_by {|k| k.cyclomatic_complexity}
+        a = @sources.sort {|k,j| j.cyclomatic_complexity <=> k.cyclomatic_complexity}
         debug_me a
         a[0..9]
       end
