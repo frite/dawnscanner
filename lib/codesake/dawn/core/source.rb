@@ -24,6 +24,12 @@ module Codesake
 
 
         attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind, :filename
+
+        # This attribute stores source file parsing status. I don't want to
+        # rely on @ast being nil since the nil value is found also when the
+        # source code is empty or fully commented on. In the case of a parsing
+        # error, there is code inside.
+        attr_reader :status
         attr_accessor :kind
 
         def initialize(options={})
@@ -34,6 +40,7 @@ module Codesake
           @comment_lines = 0
           @cyclomatic_complexity = 1
           @kind = SCRIPT
+          @status = :ok
 
           @filename   = options[:filename]  unless options[:filename].nil?
           @debug      = options[:debug]     unless options[:debug].nil?
@@ -49,15 +56,19 @@ module Codesake
             $logger.helo "dawn-source", Codesake::Dawn::VERSION
           end
 
-          debug_me "Building #{@filename} AST"
-
-          @ast = RubyParser.new.parse(File.binread(@filename), @filename) if is_ruby?
-          @ast = RubyParser.new.process(Haml::Engine.new(File.read(@filename)).precompiled, @filename) if is_haml?
-          @ast = RubyParser.new.process(ERB.new(File.read(@filename)).src, @filename) if is_erb?
-          $logger.warn "#{@filename} produced an empty AST. File can be either empty or all lines commented out" if @ast.nil?
-          debug_me "AST is #{@ast}"
-          calc_stats
-          @cyclomatic_complexity = calc_cyclomatic_complexity
+          begin
+            @ast = RubyParser.new.parse(File.binread(@filename), @filename) if is_ruby?
+            @ast = RubyParser.new.process(Haml::Engine.new(File.read(@filename)).precompiled, @filename) if is_haml?
+            @ast = RubyParser.new.process(ERB.new(File.read(@filename)).src, @filename) if is_erb?
+            $logger.warn "#{@filename} produced an empty AST. File can be either empty or all lines commented out" if @ast.nil?
+            debug_me "AST is #{@ast}" unless @ast.nil?
+            calc_stats
+            @cyclomatic_complexity = calc_cyclomatic_complexity
+          rescue => e
+            $logger.err "#{@filename}: parsing error (#{e.message})"
+            @ast = nil
+            @status = :ko
+          end
 
         end
 
