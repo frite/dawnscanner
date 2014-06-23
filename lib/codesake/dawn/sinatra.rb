@@ -14,7 +14,7 @@ module Codesake
       attr_reader :mount_point
 
       attr_reader :total_lines
-      attr_reader :sources, :views, :controllers, :models;
+      attr_reader :sources, :views, :controllers, :models
       def initialize(options={})
         super(options)
         @mount_point = (options[:mp].nil?)? "" : options[:mp]

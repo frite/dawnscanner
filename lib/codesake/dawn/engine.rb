@@ -26,17 +26,8 @@ module Codesake
 
       # Typical MVC elements here
 
-      # Each view will be something like {:filename=>"target/views/index.haml", :language=>:haml}
       attr_reader :views
-
-      # Each controller will be a little bit more complex. Of course for
-      # Sinatra, the controller filename will be the sole web application ruby
-      # file.
-      # {:filename=>"target/controllers/this_controller.rb", :actions=>[{:name=>"index", :method=>:get, :map=>"/"]}
       attr_reader :controllers
-
-      # Models I don't know right now. Let them initialized as Array... we
-      # will see later 
       attr_reader :models
 
       attr_accessor :debug
@@ -75,9 +66,6 @@ module Codesake
         @ruby_version = get_ruby_version if options[:target].nil?
         @gemfile_lock = options[:gemfile_name] unless options[:gemfile_name].nil? 
 
-        @views        = detect_views 
-        @controllers  = detect_controllers
-        @models       = detect_models
 
         if $logger.nil?
           $logger  = Codesake::Commons::Logging.instance
@@ -114,9 +102,6 @@ module Codesake
         @filenames
 
       end
-      def detect_views
-        []
-      end
       def error!
         @error = true
       end
@@ -136,13 +121,7 @@ module Codesake
         ret
       end
 
-      def detect_controllers
-        []
-      end
 
-      def detect_models
-        []
-      end
 
       def get_ruby_version
         unless @target.nil?
