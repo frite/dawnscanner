@@ -7,7 +7,7 @@ frameworks.
 
 This is an ongoing roadmap for the Codesake::Dawn source code review tool.
 
-_latest update: Mon Mar 31 13:01:21 CEST 2014_
+_latest update: Thu Jun 26 07:46:55 CEST 2014_
 
 ## Version 1.2.0
 
@@ -28,6 +28,7 @@ _latest update: Mon Mar 31 13:01:21 CEST 2014_
 
 ## Version 1.3.0
 
+* Integrate a JS parser to detect DOM based XSS
 * Add support for ERB for in detect\_views
 * Add preliminary javascript support
 * adding test for CVE-2011-4969  XSS in jquery < 1.6.2
