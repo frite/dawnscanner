@@ -23,7 +23,7 @@ module Codesake
         MAIN_APP    = :main_app
 
 
-        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind, :filename
+        attr_reader :total_lines, :empty_lines, :comment_lines, :cyclomatic_complexity, :kind, :filename, :methods_count
 
         # This attribute stores source file parsing status. I don't want to
         # rely on @ast being nil since the nil value is found also when the
@@ -65,6 +65,7 @@ module Codesake
             debug_me "AST is #{@ast}" unless @ast.nil?
             calc_stats
             @cyclomatic_complexity = calc_cyclomatic_complexity
+            @methods_count = count_methods
           rescue => e
             $logger.err "#{@filename}: parsing error (#{e.message})"
             @ast = nil
@@ -143,6 +144,15 @@ module Codesake
         end
 
         private
+        def count_methods
+          return -1 if @ast.nil?
+          ret = 0
+          @ast.deep_each do |sexp|
+            ret += 1 if sexp.sexp_type == :defn
+          end
+          ret
+
+        end
           def calc_cyclomatic_complexity
             return -1 if @ast.nil?
 

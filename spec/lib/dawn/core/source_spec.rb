@@ -59,4 +59,8 @@ EOF
     @source.auto_detect.should == :class
   end
 
+  it "tells me there are 4 methods in this class" do
+    @source.methods_count.should == 4
+  end
+
 end
