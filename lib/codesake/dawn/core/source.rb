@@ -92,6 +92,8 @@ module Codesake
 
         def auto_detect
 
+          ret = nil
+
           # rails && padrino
           ret = VIEW        if @filename.include?("app/views") && (File.extname(@filename) == ".haml" || File.extname(@filename) == ".erb")
           ret = CONTROLLER  if @filename.include?("app/controller") && (File.extname(@filename) == ".rb")
@@ -103,6 +105,7 @@ module Codesake
 
           ret = SCRIPT      if is_script?
           ret = MAIN_APP    if File.basename(@filename) == "app.rb" && (@mvc == :padrino || @mvc == :sinatra)
+          ret = CLASS       if ret.nil?
           ret
         end
 
