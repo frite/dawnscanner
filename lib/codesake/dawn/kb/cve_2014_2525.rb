@@ -2,7 +2,7 @@ module Codesake
 	module Dawn
 		module Kb
       class CVE_2014_2525_a
-        include BasicCheck
+        include Codesake::Dawn::Core::Kb::BasicCheck
 
         def initialize
           message = "When relying on system wide libyaml, this must be > 0.1.5"

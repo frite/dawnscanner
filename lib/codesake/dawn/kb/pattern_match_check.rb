@@ -4,7 +4,7 @@ module Codesake
   module Dawn
     module Kb
       module PatternMatchCheck
-        include BasicCheck
+        include Codesake::Dawn::Core::Kb::BasicCheck
 
 
         attr_reader   :attack_pattern

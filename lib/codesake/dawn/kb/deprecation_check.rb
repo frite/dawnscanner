@@ -2,7 +2,7 @@ module Codesake
   module Dawn
     module Kb
       class DeprecationCheck
-        include BasicCheck
+        include Codesake::Dawn::Core::Kb::BasicCheck
 
         DEPRECATION_MATRIX = [
           # {:gem=>"rails", :versions=>['0.x', '1.x', '2.x']},

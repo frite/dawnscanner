@@ -38,7 +38,10 @@ EOF
 
   context "if in the code we use ssl" do
 
-    it "fires when you assign OpenSSL::SSL::VERIFY_NONE to a Net::HTTP class variable"
+    it "fires when you assign OpenSSL::SSL::VERIFY_NONE to a Net::HTTP class variable" do
+      @check.source_ast = @source.ast
+      @check.vuln?.should   be_true
+    end
     it "fires when you make this assignment OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE"
     it "fires when you open an uri this way: open(uri,:ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE)"
     it "fires when you open an uri this way: open(request_uri, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})"

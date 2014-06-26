@@ -2,7 +2,7 @@ module Codesake
   module Dawn
     module Kb
       module ComboCheck
-        include BasicCheck
+        include Codesake::Dawn::Core::Kb::BasicCheck
 
         attr_reader   :checks
         attr_accessor :options

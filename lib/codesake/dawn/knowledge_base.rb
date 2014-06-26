@@ -1,5 +1,5 @@
 # Core KB
-require "codesake/dawn/kb/basic_check"
+require "codesake/dawn/core/kb/basic_check"
 require "codesake/dawn/kb/pattern_match_check"
 require "codesake/dawn/kb/dependency_check"
 require "codesake/dawn/kb/ruby_version_check"
@@ -241,9 +241,10 @@ module Codesake
       OS_CHECK            = :os_check
       COMBO_CHECK         = :combo_check
       CUSTOM_CHECK        = :custom_check
+      SOURCE_CHECK        = :source_check
 
       def initialize(options={})
-        @enabled_checks = Codesake::Dawn::Kb::BasicCheck::ALLOWED_FAMILIES
+        @enabled_checks = Codesake::Dawn::Core::Kb::BasicCheck::ALLOWED_FAMILIES
         @enabled_checks = options[:enabled_checks] unless options[:enabled_checks].nil?
         @disable_dependency_checks = options[:disable_dependency_checks] unless options[:disable_dependency_checks].nil?
 
@@ -486,6 +487,7 @@ module Codesake
         # END @owasp_ror_cheatsheet_checks array
         @code_quality_checks = [
           Codesake::Dawn::Kb::NotRevisedCode.new,
+          Codesake::Dawn::Kb::SSLVerificationBypass.new,
         ]
         @aux_checks =
         [

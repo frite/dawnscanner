@@ -2,7 +2,7 @@ module Codesake
   module Dawn
     module Kb
       module RubyVersionCheck
-        include BasicCheck
+        include Codesake::Dawn::Core::Kb::BasicCheck
         # Array of hashes in the {:engine=>"ruby", :version=>"1.9.3", :patchlevel=>"p342"} form
         attr_accessor   :safe_rubies
         # Hash in the {:engine=>"ruby", :version=>"1.9.3", :patchlevel=>"p342"} form

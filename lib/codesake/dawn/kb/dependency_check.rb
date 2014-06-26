@@ -2,7 +2,7 @@ module Codesake
   module Dawn
     module Kb
       module DependencyCheck
-        include BasicCheck
+        include Codesake::Dawn::Core::Kb::BasicCheck
 
         attr_accessor :dependencies
 
