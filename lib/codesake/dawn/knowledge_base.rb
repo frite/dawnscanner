@@ -13,6 +13,8 @@ require "codesake/dawn/kb/deprecation_check"
 require "codesake/dawn/kb/not_revised_code"
 # require "codesake/dawn/kb/owasp_ror_cheatsheet"
 
+require "codesake/dawn/kb/ssl_verification_bypass"
+
 ## Owasp ROR Cheatsheet
 
 require 'codesake/dawn/kb/owasp_ror_cheatsheet/command_injection'
