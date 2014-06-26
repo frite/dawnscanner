@@ -8,6 +8,8 @@ require "codesake/dawn/kb/combo_check"
 require "codesake/dawn/kb/version_check"
 require "codesake/dawn/kb/deprecation_check"
 
+require "codesake/dawn/core/kb/source_check"
+
 # Q&A related checks
 ## Not revised code
 require "codesake/dawn/kb/not_revised_code"
