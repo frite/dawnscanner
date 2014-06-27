@@ -29,10 +29,17 @@ module Codesake
             return true if elem[:pre_conditions_operand] == :and
           end
 
+          # canary is a target variable.
+          # param_discard is a method parameter we don't want to use
           def is_this_precondition_met?(e)
             @source_ast.deep_each do |sexp|
-              debug_me("src=#{sexp.inspect} - dst=#{e.inspect}")
-              return true if sexp === e
+              # debug_me("src=#{sexp.inspect} - dst=#{e.inspect}: #{sexp.inspect == e.inspect}")
+              if e.sexp_type == :lasgn && sexp.sexp_type == :lasgn
+                canary_var = (e.entries[1] == :canary)
+                debug_me e.sexp_body
+
+              end
+              return true if sexp == e
             end
             false
           end

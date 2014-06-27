@@ -18,9 +18,9 @@ module Codesake
           self.vulnerable_ast = [
             # case 1. Both net/http and net/https libraries must be required and canary must be an Net::HTTP object. We must use ssl and verify_mode must set to VERIFY_NONE
             {:pre_conditions=>[
-                  RubyParser.new.parse("request 'net/https'"),
-                  RubyParser.new.parse("request 'net/http'"),
-                  RubyParser.new.parse("canary = Net::HTTP.new(uri.host, uri.port)"),
+                  RubyParser.new.parse("require 'net/https'"),
+                  RubyParser.new.parse("require 'net/http'"),
+                  RubyParser.new.parse("canary = Net::HTTP.new(param_discard, param_discard)"),
                   RubyParser.new.parse("canary.use_ssl = true")
              ],
              :pre_conditions_operand=>:and,
