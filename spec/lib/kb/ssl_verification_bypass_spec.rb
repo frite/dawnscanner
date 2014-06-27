@@ -31,6 +31,7 @@ EOF
 
     @source = Codesake::Dawn::Core::Source.new({:filename=>"./open_uri_with_ssl.rb", :debug=>true})
     @check = Codesake::Dawn::Kb::SSLVerificationBypass.new
+    @check.debug = true
   end
   after(:all) do
     File.delete("./open_uri_with_ssl.rb")
@@ -39,7 +40,7 @@ EOF
   context "if in the code we use ssl" do
 
     it "fires when you assign OpenSSL::SSL::VERIFY_NONE to a Net::HTTP class variable" do
-      @check.source_ast = @source.ast
+      @check.source_ast     = @source.ast
       @check.vuln?.should   be_true
     end
     it "fires when you make this assignment OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE"
