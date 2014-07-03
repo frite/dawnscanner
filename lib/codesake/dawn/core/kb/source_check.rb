@@ -36,7 +36,8 @@ module Codesake
               # debug_me("src=#{sexp.inspect} - dst=#{e.inspect}: #{sexp.inspect == e.inspect}")
               if e.sexp_type == :lasgn && sexp.sexp_type == :lasgn
                 canary_var = (e.entries[1] == :canary)
-                debug_me e.sexp_body
+                # FIXME: start restart working here
+
 
               end
               return true if sexp == e
