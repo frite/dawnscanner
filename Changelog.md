@@ -27,6 +27,9 @@ _latest update: Thu Jun 12 2014 10:03:01 CEST_
 * Adding a check for CVE-2014-3482: SQL Injection on Rails 3.2.x due to PostgreSQL adapter for active record (issue #73)
 * Adding a check for CVE-2014-3483: Ruby on Rails 4.x SQL Injection due to
   PostgreSQL adapter (issue #75)
+* Fix issue #76 about codesake-dawn gem name being changed. On November 1st,
+  2014 we will rename the codesake-dawn name to just 'dawn' cleaning up also
+  the namespace.
 
 ## Version 1.1.3 - codename: Lightning McQueen (2014-05-06)
 
