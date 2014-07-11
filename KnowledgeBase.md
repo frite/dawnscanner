@@ -172,10 +172,22 @@ XML documents with carefully crafted entity expansion strings which can cause th
 * [CVE-2014-2538](http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-2538): rack-ssl Gem for Ruby contains a flaw that allows a reflected cross-site scripting (XSS) attack. This flaw exists because the program does not validate input passed via error messages before returning it to users. This may allow a context-dependent attacker to create a specially crafted request that would execute arbitrary script code in a user's browser session within the trust relationship between their browser and the server.
 * [CVE-2014-3482](http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3482): Ruby on Rails contains a flaw that may allow carrying out an SQL injection attack. The issue is due to the PostgreSQL adapter for Active Record not properly sanitizing user-supplied input when quoting bitstrings. This may allow a remote attacker to inject or manipulate SQL queries in the back-end database, allowing for the manipulation or disclosure of arbitrary data.
 * [CVE-2014-3483](http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3483): Ruby on Rails contains a flaw that may allow carrying out an SQL injection attack. The issue is due to the PostgreSQL adapter for Active Record not properly sanitizing user-supplied input when quoting ranges. This may allow a remote attacker to inject or manipulate SQL queries in the back-end database, allowing for the manipulation or disclosure of arbitrary data.
+<<<<<<< HEAD
 * OSVDB-105971: sfpagent Gem for Ruby contains a flaw that is triggered as JSON[body] input is not properly sanitized when handling module names with shell metacharacters. This may allow a context-dependent attacker to execute arbitrary commands.
 * OSVDB-108569: backup_checksum Gem for Ruby contains a flaw in /lib/backup/cli/utility.rb that is triggered as the program displays password information in plaintext in the process list. This may allow a local attacker to gain access to password information.
 * OSVDB-108570: backup_checksum Gem for Ruby contains a flaw in /lib/backup/cli/utility.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
 * OSVDB-108530: kajam Gem for Ruby contains a flaw in /dataset/lib/dataset/database/postgresql.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
+=======
+* [OSVDB-105971](http://osvdb.org/show/osvdb/105971): sfpagent Gem for Ruby contains a flaw that is triggered as JSON[body] input is not properly sanitized when handling module names with shell metacharacters. This may allow a context-dependent attacker to execute arbitrary commands.
+* OSVDB-105971: sfpagent Gem for Ruby contains a flaw that is triggered as JSON[body] input is not properly sanitized when handling module names with shell metacharacters. This may allow a context-dependent attacker to execute arbitrary commands.
+* [OSVDB-108569](http://osvdb.org/show/osvdb/108569): backup_checksum Gem for Ruby contains a flaw in /lib/backup/cli/utility.rb that is triggered as the program displays password information in plaintext in the process list. This may allow a local attacker to gain access to password information.
+* OSVDB-108569: backup_checksum Gem for Ruby contains a flaw in /lib/backup/cli/utility.rb that is triggered as the program displays password information in plaintext in the process list. This may allow a local attacker to gain access to password information.
+* [OSVDB-108570](http://osvdb.org/show/osvdb/108570): backup_checksum Gem for Ruby contains a flaw in /lib/backup/cli/utility.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
+* OSVDB-108570: backup_checksum Gem for Ruby contains a flaw in /lib/backup/cli/utility.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
+* [OSVDB-108530](http://osvdb.org/show/osvdb/108530): kajam Gem for Ruby contains a flaw in /dataset/lib/dataset/database/postgresql.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
+* OSVDB-108530: kajam Gem for Ruby contains a flaw in /dataset/lib/dataset/database/postgresql.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
+* [OSVDB-108563](http://osvdb.org/show/osvdb/108563): gyazo Gem for Ruby contains a flaw in client.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
+>>>>>>> rspec_fixup_for_1_2
 * OSVDB-108563: gyazo Gem for Ruby contains a flaw in client.rb that is triggered when handling metacharacters. This may allow a remote attacker to execute arbitrary commands.
 * Owasp Ror CheatSheet: Command Injection: Ruby offers a function called "eval" which will dynamically build new Ruby code based on Strings. It also has a number of ways to call system commands. While the power of these commands is quite useful, extreme care should be taken when using them in a Rails based application. Usually, its just a bad idea. If need be, a whitelist of possible values should be used and any input should be validated as thoroughly as possible. The Ruby Security Reviewer's Guide has a section on injection and there are a number of OWASP references for it, starting at the top: Command Injection.
 * Owasp Ror CheatSheet: Cross Site Request Forgery: Ruby on Rails has specific, built in support for CSRF tokens. To enable it, or ensure that it is enabled, find the base ApplicationController and look for the protect_from_forgery directive. Note that by default Rails does not provide CSRF protection for any HTTP GET request.
@@ -205,4 +217,8 @@ Setting this to true will essentially strip out any host information.
 This check will analyze the source code looking for the following patterns: XXX, TO_CHECK, CHECKME, CHECK and FIXME
 
 
+<<<<<<< HEAD
 _Last updated: Fri 11 Jul 08:07:38 CEST 2014_
+=======
+_Last updated: Tue 08 Jul 17:59:10 CEST 2014_
+>>>>>>> rspec_fixup_for_1_2
