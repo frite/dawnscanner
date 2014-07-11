@@ -10,8 +10,30 @@ _latest update: Thu Jun 12 2014 10:03:01 CEST_
 * Renamed Codesake::Dawn::Core class into Codesake::Dawn::Utils
 * Now dependency checks are disabled by default if no Gemfile.lock is present
   and the Gemfile file is used instead.
+
+## Version 1.2.0 - codename: Lightning McQueen (2014-07-xx)
+
+* Adding a check for OSVDB-108569: information disclosure in backup_checksum
+  gem (issue #69)
+* Fix issue #74. Now BasicChack has its own cve, osvdb attributes and a rake
+  task will perform a sanity check if those values have been initialized
 * Fix issue #62 about codesake-dawn config filename
 * Adding a check for CVE-2013-2105: HTML injection in show_in_browser rubygem
+* Fixing issue #68. I moved some file variable operation after the check for
+  nil value. I can't reproduce on my station the offending bug :-(
+* Adding a check for OSVDB-108570: arbitrary command execution for
+  backup_checksum gem (issue #70)
+* Adding a check for OSVDB-108530: remote code execution for kajam gem (issue
+  #71)
+* Adding a check for OSVDB-108563: remote code execution in gyazo rubygem
+  (issue #72)
+* Adding a check for CVE-2014-3482: SQL Injection on Rails 3.2.x due to
+  PostgreSQL adapter for active record (issue #73)
+* Adding a check for CVE-2014-3483: Ruby on Rails 4.x SQL Injection due to
+  PostgreSQL adapter (issue #75)
+* Fix issue #76 about codesake-dawn gem name being changed. On November 1st,
+  2014 we will rename the codesake-dawn name to just 'dawn' cleaning up also
+  the namespace.
 
 ## Version 1.1.3 - codename: Lightning McQueen (2014-05-06)
 
