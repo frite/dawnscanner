@@ -222,7 +222,11 @@ require "codesake/dawn/kb/cve_2014_2538"
 # OSVDB
 
 require "codesake/dawn/kb/osvdb_105971"
+<<<<<<< HEAD
 require "codesake/dawn/kb/osvdb_108569"
+=======
+require "codesake/dawn/kb/osvdb_108570"
+>>>>>>> issue_70_add_check_for_OSVDB_108570
 
 
 module Codesake
@@ -468,8 +472,12 @@ module Codesake
 
           # OSVDB Checks are still here since are all about dependencies
           Codesake::Dawn::Kb::OSVDB_105971.new,
+<<<<<<< HEAD
           Codesake::Dawn::Kb::OSVDB_108569.new,
 
+=======
+          Codesake::Dawn::Kb::OSVDB_108570.new,
+>>>>>>> issue_70_add_check_for_OSVDB_108570
         ]
         # END @cve_security_checks array
         # START @owasp_ror_cheatsheet_checks array
