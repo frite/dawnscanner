@@ -1,4 +1,5 @@
 require 'cvss'
+require 'codesake/dawn/debug'
 
 module Codesake
   module Dawn

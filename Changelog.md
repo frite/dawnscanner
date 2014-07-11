@@ -22,9 +22,12 @@ _latest update: Thu Jun 12 2014 10:03:01 CEST_
   nil value. I can't reproduce on my station the offending bug :-(
 * Adding a check for OSVDB-108570: arbitrary command execution for
   backup_checksum gem (issue #70)
-* Adding a check for OSVDB-108530: remote code execution for kajam gem (issue #71)
-* Adding a check for OSVDB-108563: remote code execution in gyazo rubygem (issue #72)
-* Adding a check for CVE-2014-3482: SQL Injection on Rails 3.2.x due to PostgreSQL adapter for active record (issue #73)
+* Adding a check for OSVDB-108530: remote code execution for kajam gem (issue
+  #71)
+* Adding a check for OSVDB-108563: remote code execution in gyazo rubygem
+  (issue #72)
+* Adding a check for CVE-2014-3482: SQL Injection on Rails 3.2.x due to
+  PostgreSQL adapter for active record (issue #73)
 * Adding a check for CVE-2014-3483: Ruby on Rails 4.x SQL Injection due to
   PostgreSQL adapter (issue #75)
 * Fix issue #76 about codesake-dawn gem name being changed. On November 1st,
