@@ -22,6 +22,7 @@ _latest update: Thu Jun 12 2014 10:03:01 CEST_
   backup_checksum gem (issue #70)
 * Adding a check for OSVDB-108530: remote code execution for kajam gem (issue #71)
 * Adding a check for OSVDB-108563: remote code execution in gyazo rubygem (issue #72)
+* Adding a check for CVE-2014-3482: SQL Injection on Rails 3.2.x due to PostgreSQL adapter for active record (issue #73)
 
 ## Version 1.1.3 - codename: Lightning McQueen (2014-05-06)
 
