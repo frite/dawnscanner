@@ -20,7 +20,7 @@ module Codesake
             {:pre_conditions=>[
                   RubyParser.new.parse("require 'net/https'"),
                   RubyParser.new.parse("require 'net/http'"),
-                  RubyParser.new.parse("canary = Net::HTTP.new(param_discard, param_discard)"),
+                  RubyParser.new.parse("canary = Net::HTTP.new(canary, canary)"),
                   RubyParser.new.parse("canary.use_ssl = true")
              ],
              :pre_conditions_operand=>:and,
