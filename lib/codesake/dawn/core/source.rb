@@ -62,7 +62,7 @@ module Codesake
             @ast = RubyParser.new.process(ERB.new(File.read(@filename)).src, @filename) if is_erb?
             $logger.warn "#{@filename} produced an empty AST. File can be either empty or all lines commented out" if @ast.nil?
             @status = :empty if @ast.nil?
-            debug_me "AST is #{@ast}" unless @ast.nil?
+            # debug_me "AST is #{@ast}" unless @ast.nil?
             calc_stats
             @cyclomatic_complexity = calc_cyclomatic_complexity
             @methods_count = count_methods

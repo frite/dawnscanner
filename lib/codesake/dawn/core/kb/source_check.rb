@@ -63,12 +63,12 @@ module Codesake
             a = true
             elem[:pre_conditions].each do |e|
               a = a && is_this_precondition_met?(e)
-              debug_me "evaluating pre condition: #{e.inspect}. met?: #{a}"
+              # debug_me "evaluating pre condition: #{e.inspect}. met?: #{a}"
               return true if a && elem[:pre_conditions_operand] == :or
               return false if !a && elem[:pre_conditions_operand] == :and
             end
 
-            debug_me "are_preconditions_met?(#{elem}): #{a}"
+            # debug_me "are_preconditions_met?(#{elem}): #{a}"
             return a
           end
 
@@ -92,8 +92,17 @@ module Codesake
 
           def is_vulerable_code?(e)
             @source_ast.deep_each do |sexp|
+              # constant declaration (e.g. OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE)
+              if (e.sexp_type == :cdecl) && (sexp.sexp_type == :cdecl)
+                return true if (e.entries[1].to_a == sexp.entries[1].to_a) && (e.entries[2].to_a == sexp.entries[2].to_a)
+              end
+              # class attribute assignment (e.g. request.use_ssl = true)
               if (e.sexp_type == :attrasgn) && (sexp.sexp_type == :attrasgn)
-                return true if (e.entries[2] == sexp.entries[2]) && (e.entries[3].to_a == sexp.entries[3].to_a)
+                if e.entries[1].to_a[2] == :canary
+                  return true if (e.entries[2] == sexp.entries[2]) && (e.entries[3].to_a == sexp.entries[3].to_a)
+                else
+                  return true if (e.entries[2] == sexp.entries[2]) && (e.entries[3].to_a == sexp.entries[3].to_a)
+                end
               end
             end
             false
@@ -103,7 +112,10 @@ module Codesake
             @vulnerable_ast.each do |vuln_elem|
               pre = are_preconditions_met?(vuln_elem)
               found = is_vulerable_code?(vuln_elem[:ast]) if pre
-              return debug_me_and_return_true("source code vulnerable") if pre && found
+              if pre && found
+                debug_me "*** SOURCE CODE IS VULNERABLE ***"
+                return true
+              end
             end
             false
           end

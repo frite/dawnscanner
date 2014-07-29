@@ -17,14 +17,24 @@ module Codesake
 
           self.vulnerable_ast = [
             # case 1. Both net/http and net/https libraries must be required and canary must be an Net::HTTP object. We must use ssl and verify_mode must set to VERIFY_NONE
-            {:pre_conditions=>[
-                  RubyParser.new.parse("require 'net/https'"),
-                  RubyParser.new.parse("require 'net/http'"),
-                  RubyParser.new.parse("canary = Net::HTTP.new(canary, canary)"),
-                  RubyParser.new.parse("canary.use_ssl = true")
-             ],
-             :pre_conditions_operand=>:and,
-             :ast=>RubyParser.new.parse("canary.verify_mode = OpenSSL::SSL::VERIFY_NONE")
+            {
+              :pre_conditions=>[
+                RubyParser.new.parse("require 'net/https'"),
+                RubyParser.new.parse("require 'net/http'"),
+                RubyParser.new.parse("canary = Net::HTTP.new(canary, canary)"),
+                RubyParser.new.parse("canary.use_ssl = true")
+              ],
+              :pre_conditions_operand=>:and,
+              :ast=>RubyParser.new.parse("canary.verify_mode = OpenSSL::SSL::VERIFY_NONE")
+            },
+            # case 2. the two requires must be included and OpenSSL::SSL::VERIFY_PEER is set to VERIFY_NONE
+            {
+              :pre_conditions=>[
+                RubyParser.new.parse("require 'net/https'"),
+                RubyParser.new.parse("require 'net/http'")
+              ],
+              :pre_conditions_operand=>:and,
+              :ast=>RubyParser.new.parse("OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE")
             },
           ]
 
