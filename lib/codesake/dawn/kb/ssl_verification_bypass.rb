@@ -31,7 +31,9 @@ module Codesake
             {
               :pre_conditions=>[
                 RubyParser.new.parse("require 'net/https'"),
-                RubyParser.new.parse("require 'net/http'")
+                RubyParser.new.parse("require 'net/http'"),
+                RubyParser.new.parse("canary = Net::HTTP.new(canary, canary)"),
+                RubyParser.new.parse("canary.use_ssl = true")
               ],
               :pre_conditions_operand=>:and,
               :ast=>RubyParser.new.parse("OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE")
