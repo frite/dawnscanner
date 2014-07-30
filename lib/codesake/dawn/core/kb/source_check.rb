@@ -87,6 +87,7 @@ module Codesake
               end
               return true if sexp == e
             end
+            debug_me "precondition #{e.entries} not matched"
             false
           end
 
