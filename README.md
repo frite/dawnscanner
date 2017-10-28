@@ -1,11 +1,11 @@
-# Dawn - The raising security scanner for ruby web applications
+# Dawnscanner - The raising security scanner for ruby web applications
 
-Dawn is a source code scanner designed to review your ruby code for security
+dawnscanner is a source code scanner designed to review your ruby code for security
 issues.
 
-Dawn is able to scan plain ruby scripts (e.g. command line applications) but
+dawnscanner is able to scan plain ruby scripts (e.g. command line applications) but
 all its features are unleashed when dealing with web applications source code.
-Dawn is able to scan major MVC (Model View Controller) frameworks, out of the
+dawnscanner is able to scan major MVC (Model View Controller) frameworks, out of the
 box:
 
 * [Ruby on Rails](http://rubyonrails.org)
@@ -18,18 +18,19 @@ box:
 [![Build Status](https://travis-ci.org/thesp0nge/dawnscanner.png?branch=master)](https://travis-ci.org/thesp0nge/dawnscanner)
 [![Dependency Status](https://gemnasium.com/thesp0nge/dawnscanner.png)](https://gemnasium.com/thesp0nge/dawnscanner)
 [![Coverage Status](https://coveralls.io/repos/thesp0nge/dawnscanner/badge.png)](https://coveralls.io/r/thesp0nge/dawnscanner)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/thesp0nge/dawnscanner/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Code Triagers Badge](https://www.codetriage.com/thesp0nge/dawnscanner/badges/users.svg)](https://www.codetriage.com/thesp0nge/dawnscanner)
 [![Inline docs](http://inch-ci.org/github/thesp0nge/dawnscanner.png?branch=master)](http://inch-ci.org/github/thesp0nge/dawnscanner)
+[![Gitter](https://badges.gitter.im/thesp0nge/dawnscanner.svg)](https://gitter.im/thesp0nge/dawnscanner?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ---
 
-Dawn version 1.3.5 has 192 security checks loaded in its knowledge
+dawnscanner version 1.6.6 has 235 security checks loaded in its knowledge
 base. Most of them are CVE bulletins applying to gems or the ruby interpreter
 itself. There are also some check coming from Owasp Ruby on Rails cheatsheet.
 
 ## An overall introduction
 
-When you run Dawn on your code it parses your project Gemfile.lock
+When you run dawnscanner on your code it parses your project Gemfile.lock
 looking for the gems used and it tries to detect the ruby interpreter version
 you are using or you declared in your ruby version management tool you like
 most (RVM, rbenv, ...).
@@ -38,12 +39,12 @@ Then the tool tries to detect the MVC framework your web application uses and
 it applies the security check accordingly. There checks designed to match rails
 application or checks that are appliable to any ruby code.
 
-Dawn can also understand the code in your views and to backtrack
+dawnscanner can also understand the code in your views and to backtrack
 sinks to spot cross site scripting and sql injections introduced by the code
 you actually wrote. In the project roadmap this is the code most of the future
 development effort will be focused on.
 
-Dawn security scan result is a list of vulnerabilities with some
+dawnscanner security scan result is a list of vulnerabilities with some
 mitigation actions you want to follow in order to build a stronger web
 application.
 
@@ -57,7 +58,7 @@ public signing certificate as trusted to your gem specific keyring.
 $ gem cert --add <(curl -Ls https://raw.githubusercontent.com/thesp0nge/dawnscanner/master/certs/paolo_at_dawnscanner_dot_org.pem)
 ```
 
-You can install latest Dawn version, fetching it from
+You can install latest dawnscanner version, fetching it from
 [Rubygems](https://rubygems.org) by typing:
 
 ```
@@ -66,7 +67,7 @@ $ gem install dawnscanner -P MediumSecurity
 
 The MediumSecurity trust profile will verify signed gems, but allow the
 installation of unsigned dependencies. This is necessary because not all of
-Dawn’s dependencies are signed, so we cannot use HighSecurity.
+dawnscanner’s dependencies are signed, so we cannot use HighSecurity.
 
 In order to install a release candidate version, the gem install command line
 is the following:
@@ -99,10 +100,10 @@ that.
 
 ## Usage
 
-You can start your code review with Dawn very easily. Simply tell the tool
+You can start your code review with dawnscanner very easily. Simply tell the tool
 where the project root directory.
 
-Underlying MVC framework is autodetected by Dawn using target Gemfile.lock
+Underlying MVC framework is autodetected by dawnscanner using target Gemfile.lock
 file. If autodetect fails for some reason, the tool will complain about it and
 you have to specify if it's a rails, sinatra or padrino web application by
 hand.
@@ -122,49 +123,55 @@ $ dawn -h
 Usage: dawn [options] target_directory
 
 Examples:
-  $ dawn a_sinatra_webapp_directory
-  $ dawn -C the_rails_blog_engine
-  $ dawn -C --json a_sinatra_webapp_directory
-  $ dawn --ascii-tabular-report my_rails_blog_ecommerce
-  $ dawn --html -F my_report.html my_rails_blog_ecommerce
+	$ dawn a_sinatra_webapp_directory
+	$ dawn -C the_rails_blog_engine
+	$ dawn -C --json a_sinatra_webapp_directory
+	$ dawn --ascii-tabular-report my_rails_blog_ecommerce
+	$ dawn --html -F my_report.html my_rails_blog_ecommerce
 
-   -r, --rails          force dawn to consider the target a rails application
-   -s, --sinatra        force dawn to consider the target a sinatra application
-   -p, --padrino        force dawn to consider the target a padrino application
-   -G, --gem-lock       force dawn to scan only for vulnerabilities affecting dependencies in Gemfile.lock
-   -a, --ascii-tabular-report   cause dawn to format findings using table in ascii art
-   -j, --json                   cause dawn to format findings using json
-   -C, --count-only             dawn will only count vulnerabilities (useful for scripts)
-   -z, --exit-on-warn           dawn will return number of found vulnerabilities as exit code
-   -F, --file filename          tells dawn to write output to filename
-   -c, --config-file filename   tells dawn to load configuration from filename
+   -r, --rails					force dawn to consider the target a rails application (DEPRECATED)
+   -s, --sinatra				force dawn to consider the target a sinatra application (DEPRECATED)
+   -p, --padrino				force dawn to consider the target a padrino application (DEPRECATED)
+   -G, --gem-lock				force dawn to scan only for vulnerabilities affecting dependencies in Gemfile.lock (DEPRECATED)
+   -d, --dependencies				force dawn to scan only for vulnerabilities affecting dependencies in Gemfile.lock
+
+Reporting
+
+   -a, --ascii-tabular-report			cause dawn to format findings using tables in ascii art (DEPRECATED)
+   -j, --json					cause dawn to format findings using json
+   -K, --console					cause dawn to format findings using plain ascii text
+   -C, --count-only				dawn will only count vulnerabilities (useful for scripts)
+   -z, --exit-on-warn				dawn will return number of found vulnerabilities as exit code
+   -F, --file filename				tells dawn to write output to filename
+   -c, --config-file filename			tells dawn to load configuration from filename
 
 Disable security check family
 
-       --disable-cve-bulletins  disable all CVE security checks
-       --disable-code-quality   disable all code quality checks
-       --disable-code-style     disable all code style checks
-       --disable-owasp-ror-cheatsheet   disable all Owasp Ruby on Rails cheatsheet checks
-       --disable-owasp-top-10           disable all Owasp Top 10 checks
+       --disable-cve-bulletins			disable all CVE security checks
+       --disable-code-quality			disable all code quality checks
+       --disable-code-style			disable all code style checks
+       --disable-owasp-ror-cheatsheet		disable all Owasp Ruby on Rails cheatsheet checks
+       --disable-owasp-top-10			disable all Owasp Top 10 checks
 
 Flags useful to query Dawn
 
-       -S, --search-knowledge-base [check_name]   search check_name in the knowledge base
-           --list-knowledge-base                  list knowledge-base content
-           --list-known-families                  list security check families contained in dawn's knowledge base
-           --list-known-framework                 list ruby MVC frameworks supported by dawn
+   -S, --search-knowledge-base [check_name]	search check_name in the knowledge base
+       --list-knowledge-base			list knowledge-base content
+       --list-known-families			list security check families contained in dawn's knowledge base
+       --list-known-framework			list ruby MVC frameworks supported by dawn
+       --list-scan-registry			list past scan informations stored in scan registry 
 
 Service flags
 
-   -D, --debug                                  enters dawn debug mode
-   -V, --verbose                                the output will be more verbose
-   -v, --version                                show version information
-   -h, --help                                   show this help
+   -D, --debug					enters dawn debug mode
+   -V, --verbose				the output will be more verbose
+   -v, --version				show version information
+   -h, --help					show this help
 ```
 
 ### Rake task
 
-To include Dawn in your rake task list, you simply have to put this line in
+To include dawnscanner in your rake task list, you simply have to put this line in
 your ```Rakefile```
 
 ```
@@ -203,15 +210,15 @@ $ dawn -S this_test_does_not_exist
 this_test_does_not_exist not found in knowledgebase
 ```
 
-### Dawn security scan in action
+### dawnscanner security scan in action
 
-As output, Dawn will put all security checks that are failed during the scan.
+As output, dawnscanner will put all security checks that are failed during the scan.
 
-This the result of Codedake::Dawn running against a
+This the result of Codedake::dawnscanner running against a
 [Sinatra 1.4.2 web application](https://github.com/thesp0nge/railsberry2013) wrote for a talk I
 delivered in 2013 at [Railsberry conference](http://www.railsberry.com).
 
-As you may see, Dawn first detects MVC running the application by
+As you may see, dawnscanner first detects MVC running the application by
 looking at Gemfile.lock, than it discards all security checks not appliable to
 Sinatra (49 security checks, in version 1.0, especially designed for Ruby on
 Rails) and it applies them.
@@ -236,11 +243,11 @@ $ dawn ~/src/hacking/railsberry2013
 
 ---
 
-When you run Dawn on a web application with up to date dependencies,
+When you run dawnscanner on a web application with up to date dependencies,
 it's likely to return a friendly _no vulnerabilities found_ message. Keep it up
 working that way!
 
-This is Dawn running against a Padrino web application I wrote for [a
+This is dawnscanner running against a Padrino web application I wrote for [a
 scorecard quiz game about application security](http://scorecard.armoredcode.com).
 Italian language only. Sorry.
 
@@ -254,7 +261,7 @@ Italian language only. Sorry.
 18:42:39 [*] dawn is leaving
 ```
 
-If you need a fancy HTML report about your scan, just ask it to Dawn
+If you need a fancy HTML report about your scan, just ask it to dawnscanner
 with the ```--html``` flag used with the ```--file``` since I wanto to save the
 HTML to disk.
 
@@ -285,7 +292,7 @@ Feedbacks are great and we really love to hear your voice.
 If you're a proud dawnscanner user, if you find it useful, if you integrated
 it in your release process and if you want to openly support the project you
 can put your reference here. Just open an
-[issue](https://github.com/thesp0nge/dawn/issues/new) with a statement saying
+[issue](https://github.com/thesp0nge/dawnscanner/issues/new) with a statement saying
 how do you feel the tool and your company logo if any.
 
 More easily you can drop an email to
@@ -304,31 +311,10 @@ Thank you.
 
 [Matteo](https://github.com/matteocollina): for ideas on API and their usage with [github.com](https://github.com) hooks
 
-## Contribute to Dawn
-
-Are you interested in contributing to Dawn project? Great, here is
-some very basic rules in order to make rocking pull requests.
-
-First of all, I use the branching model described in [this
-post](http://nvie.com/posts/a-successful-git-branching-model/). There are two
-major branches:
-
-* master: it contains in every moment the code for the latest dawnscanner
-  released gem. You can't make branches from here unless you're working on a
-  bugfix.
-* development: it contains the unstable code that is going to be the next
-  dawnscanner realease. You start from here. Pick a task on the Roadmap.md
-  and create a separated branch to work on your feature to. When you're ready
-  (remember to include also spec files), submit your pull request. If the code
-  will be fine, it will be merged into the development tree ready to be include
-  in upcoming gem version.
-
-No branch from master it would be analyzed unless they are related to bugfix.
-In this case, the branch name must be something like _issue\_#xx\_description_
 
 ## LICENSE
 
-Copyright (c) 2013, 2014, 2015 Paolo Perego
+Copyright (c) 2013-2016 Paolo Perego <paolo@dawnscanner.org>
 
 MIT License
 

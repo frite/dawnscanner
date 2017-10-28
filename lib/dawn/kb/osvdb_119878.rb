@@ -21,10 +21,10 @@ module Dawn
             :applies=>["rails", "sinatra", "padrino"],
             :kind=>Dawn::KnowledgeBase::DEPENDENCY_CHECK,
             :message=>message,
-            :mitigation=>"The vulnerability at the 4 April 2015 it has not been fixed. Please refer to gem readme to check when vulnerability it has been fixed.",
-            :aux_links=>[""]
+            :mitigation=>"Please upgrade rest-client gem version to 1.8.0 or later.",
+            :aux_links=>["https://github.com/rest-client/rest-client/issues/369"]
            })
-           self.safe_dependencies = [{:name=>"rest-client", :version=>['99.99.99']}]
+          self.safe_dependencies = [{:name=>"rest-client", :version=>['1.8.0', '2.0.0.rc1', '2.0.0.rc2']}]
 
 				end
 			end

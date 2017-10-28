@@ -1,11 +1,243 @@
-# Dawn - changelog
+# Dawnscanner - changelog
 
-Dawn is a static analysis security scanner for ruby written web applications.
+Dawnscanner is a static analysis security scanner for ruby written web applications.
 It supports [Sinatra](http://www.sinatrarb.com),
 [Padrino](http://www.padrinorb.com) and [Ruby on Rails](http://rubyonrails.org)
 frameworks.
 
-_latest update: Wed Jul 29 23:10:24 CEST 2015_
+_latest update: Tue Nov  1 22:47:56 CET 2016_
+
+## Version 1.6.7 - codename: Tow Mater (2016-11-24)
+
+* Removed a typo preventing CVE bulletins to be loaded in the KB
+* Removed CVSS as external dependency. Now it is a Dawn::Cvss module
+* Dropped sys-uname dependency. Using shell 'uname -r' instead
+* Dropped ptools dependency. Pattern matching will run also with binary files.
+* Applied pull request #217 - Add bundler as runtime dependency - by @kolybasov
+* Applied pull request #216 - Add TraviCI setup to README - by @vpolimenov
+* Applied pull request #215 - Fixes issue where debug mode was always enabled by @bartj3
+
+## Version 1.6.6 - codename: Tow Mater (2016-11-01)
+
+* Changed config filename to dawnscanner.yml
+* Adding a check for CVE-2016-5697: XML signature wrapping attack in ruby-saml
+* Adding a check for CVE-2016-6316: Possible XSS Vulnerability in Action View
+* Adding a check for CVE-2016-6317: Unsafe Query Generation Risk in Active
+  Record
+* Adding a check for CVE-2016-6582: Doorkeeper gem does not revoke tokens &
+  uses wrong auth/auth method
+* Issue #172 - Adding a check for OSVDB-132234: rack-attack Gem for Ruby
+  missing normalization before request path processing. Please note that OSVDB
+  it has been shutted down, however I was not able to find a CVE entry for
+  this.
+
+## Version 1.6.5 - codename: Tow Mater (2016-09-30)
+
+* Issue #212 - CVE-2014-2538 is marked as being vulnerable to rack-ssl 1.3.4.
+  The check was triggered for rack-ssl version < 1.4.0. However 1.3.4 is marked
+  as safe, so the check has to be changed as well.
+
+## Version 1.6.4 - codename: Tow Mater (2016-09-27)
+
+* Issue #199 - CVE-2015-4020 seems to give the wrong Solution
+* Issue #168 - Dawn fails for many CVEs that rails 3.2.22 is not vulnerable to
+
+## Version 1.6.3 - codename: Tow Mater (2016-09-06)
+
+* Issue #107 - Applying PULL REQUEST from @MKgridSec about CVE-2013-0334 check
+* Issue #196 - Applying PULL REQUEST from @MKgridSec about CVE 2016 0751
+  incorrectly flagged
+* Issue #197 - Applying PULL REQUEST from @MKgridSec about CVE-2016-2098
+  incorrectly flagged
+
+
+## Version 1.6.2 - codename: Tow Mater (2016-03-02)
+
+* Issue #194 - Adding a check for CVE-2016-2098: Possible remote code execution
+  vulnerability in Action Pack
+* Issue #193 - Adding a check for CVE-2016-2097: Possible Information Leak
+  Vulnerability in Action View
+* Issue #192 - Applying PULL REQUEST from @jasnow about RSPEC deprecation
+  warning fix.
+
+## Version 1.6.1 - codename: Tow Mater (2016-02-24)
+
+* Issue #191 - Fixing an issue, applying a pull request by @fronzeSolid, about
+  CVE-2015-1820 false positive in check description.
+
+## Version 1.6.0 - codename: Tow Mater (2016-02-03)
+
+* Issue #186 - Adding a check for CVE-2015-7576: Timing attack vulnerability in
+  basic authentication in Action Controller
+* Issue #185 - Adding a check for CVE-2016-0751: Possible Object Leak and
+  Denial of Service attack in Action Pack
+* BUGFIX in is_vulnerable_minor? in case of version length mismatch, there was
+  an error evaluating if safe_version.length > detected_version.length block
+* BUGFIX in is_vulnerable_aux_patch? when detected version has no auxiliary
+  patch (eg. 3.5.3) and safe version has it (eg. 3.5.3.1) the check was not
+  triggered the right way. Now aux patch is forced to 0 when missing and when
+  one of twos has it.
+* Issue #184 - Adding a check for CVE-2015-7577: Nested attributes rejection
+  proc bypass in Active Record.
+* Issue #183 - Adding a check for CVE-2015-7579: XSS vulnerability in
+  rails-html-sanitizer
+* Issue #182 - Adding a check for CVE-2016-0752: Possible Information Leak
+  Vulnerability in Action View
+* Issue #181 - Adding a check for CVE-2016:0753: Possible Input Validation
+  Circumvention in Active Model
+* Issue #180 - Adding a check for CVE-2015-7578: Possible XSS vulnerability in
+  rails-html-sanitizer
+* Issue #179 - Adding a check for CVE-2015-7581: Object leak vulnerability for
+  wildcard controller routes in Action Pack
+* BUGFIX in is_higher? when a version with an aux patch number was compared
+  with a one without ('1.2.3.4' vs '1.2.3') the incorrect result were
+  triggered.
+* BUGFIX in is_same_version? when a beta version is to be evaluated, during
+  comparison the beta number must be discarded.
+* BUGFIX in is_vulnerable_beta? handling situation when either safe version or
+  detected version doesn't have the beta number
+* BUGFIX in is_vulnerable_rc? handling situation when either safe version or
+  detected version doesn't have the rc number
+* BUGFIX in is_vulnerable_pre? handling situation when either safe version or
+  detected version doesn't have the pre number
+* Issue #173 handles a lot of CVE about nokogiri rubygem due to libxml version embedded on it:
+  - CVE-2015-5312: DoS in xmlStringLenDecodeEntities()
+  - CVE-2015-7497: DoS in xmlDictComputeFastQKey()
+  - CVE-2015-7498: DoS in xmlParseXmlDecl()
+  - CVE-2015-7499: In memory information disclosure due to heap-based buffer
+    overflow in the xmlGROW()
+  - CVE-2015-7500: DoS in xmlParseMisc()
+  - CVE-2015-8241: Information disclosure and DoS in xmlNextChar()
+  - CVE-2015-8242: Information disclosure and DoS in xmlSAX2TextNode()
+  - CVE-2015-8317: Information disclosure in xmlParseXMLDecl()
+* Issue #171 - Adding a check for CVE-2015-7541: colorscore Gem for Ruby
+  lib/colorscore/histogram.rb Arbitrary Command Injection
+* Issue #169 - Adding a check for CVE-2015-7519: Phusion Passenger Server
+  allows to overwrite headers in some cases
+* BUGFIX in bin/dawn when target from command line is '.'. The directory name
+  must be expanded to save results
+* Issue #177 BUGFIX. HTML reporting is broken. The line "support_path =
+  File.join(Dir.pwd, 'support')" in reporter.rb:40 is used to build the path
+  for support files (css, js) to be copied in the output directory. If you call
+  dawn using '.' as target directory name, an exeception is raised. Fixed
+  changing the line this way: "support_path = File.join(File.dirname(__FILE__),
+  '..', '..', 'support')"
+* Issue #177 BUGFIX. HTML filename creation is honored when -F flag is used.
+* Issue #177 IMPROVEMENT. As @mort666 suggested, now bootstrap and jquery are
+  loaded from CDN and specific CSS is now embedded in the HTML report in a
+  minified form.
+
+
+## Version 1.5.2 - codename: Tow Mater (2015-12-16)
+
+* Back on issue #170. Engine.rb still requires code metrics stuff. Commented
+  out.
+
+## Version 1.5.1 - codename: Tow Mater (2015-12-09)
+
+* Issue #170 - Error with code_metrics library cause Dawn to exit. Stats are
+  not ready to be wired up yet. Commenting them out.
+
+## Version 1.5.0 - codename: Tow Mater (2015-12-09)
+
+* Issue #92 - Fix CVE-2014-3483 incorrectly triggers for a Rails 3 app.
+* Issue #94 - dawn: Owasp Ror CheatSheet: Session management check failed
+* Adding a check for CVE-2015-1819 : DoS in libxml embedded in nokogiri
+  versions prior to 1.6.6.4
+* Issue #129 - Adding a check for OSVDB 118954 : Ruby on Rails
+  ActiveModel::Name to_json Call Infinite Loop Remote DoS
+* VersionCheck - fixed an issue about minor versioning logic, mostly used for
+  'rails' gem.
+* Issue #130 - Adding a check for OSVDB 119878 : rest-client Gem for Ruby
+  abstract_response.rb Redirection Response Set-Cookie Headers Handling Session
+  Fixation
+* Issue #123 - Adding a check for OSVDB 116010 : Doorkeeper Gem for Ruby
+  access_token Disclosure CSRF
+* Issue #124 - Adding a check for OSVDB 115654 : Sentry raven-ruby
+  lib/raven/okjson.rb Exponent / Scientific Notation Value Handling Resource
+  Consumption DoS
+* Issue #126 - Adding a check for OSVDB 117903 : ruby-saml URI SAML Response
+  Handling Remote Command Execution
+* Issue #163 - Adding a check for OSVDB 122162 : RubyGems remote_fetcher.rb
+  api_endpoint() Function Missing SRV Record Hostname Validation Request
+  Hijacking
+* Introduced a new core check Dawn::Kb::GemCheck for all checks related to
+  RubyGems framework.
+* Issue #164 - Adding a check for OSVDB 121701 : open-uri-cached Gem for Ruby
+  Unsafe Temporary File Creation Local Privilege Escalation
+* Issue #165 - Adding a check for OSVDB 120857 : refile Gem for Ruby
+  remote_image_url Attachment Remote Command Execution
+* Issue #166 - Adding a check for OSVDB 120415 : redcarpet Gem for Ruby
+  markdown.c parse_inline() Function XSS
+* Issue #161 - Mark as deprecated --rails, --padrino and --sinatra flags.  MVC
+  detection will be automatic.
+* Marked --gem-lock flag as deprecated. The dependencies check now is done
+  using --dependencies flag
+* Engine apply method it has been refactored to delete duplicated code
+* Engine \_do\_apply method it has been marked as private with some touch of
+  refactoring
+* Issue #146 - Dependency check for installation troubles. Removed 'parser' and
+  'ptools' gem from Gemfile and commented out 'grit' until version 2.0.0.
+  Unfortunately I can't handle signed third party gems with an expired
+  certificate.
+* Ascii Table Reporting: now reports in ascii table are the default and now
+  tables are written in separated text files under a
+  dawnscanner/results/target/timestamp specific folder in $HOME directory.
+  Issue #149.
+* HTML Reporting: now reports are saved in their own folder (please, refere
+  yourself to Ascii Table point for folder naming convention) with their own JS
+  and CSS folder. This will lead customers to easy organize HTML output fitting
+  their needs. Issue #149
+* HTML Reporting: fixing up link and findings in report body. Issue #149
+* Reports: removed 'priority' from all reports. Pretty useless, it can be
+  removed in future release. Issue #149.
+* Added '--console' to ask report in ascii text, no tables. Before this release
+  this flag was useless since ascii text was the standard format. Issue #149.
+* Deprecated '--ascii-tabular-report'. It takes ages for writing... better
+  '--tabular'. Issue #149.
+* -C, vulnerability count: now output is written to STDERR and fixed an issue
+  causing output to be written always in JSON, even when not requested'
+* Adding SQLite3 and Data Mapper dependencies
+* Created a scan registry stored in $HOME/dawnscanner/db directory
+* Added a '--list-scan-registry' flag to print all registry entries
+* Changed config filename to dawnscanner.yaml
+* Kb dump method moved from Dawn::Core to Dawn::KnowledgeBase
+* Added a title for checks, useful for quick reporting
+
+
+
+
+## Version 1.4.2 - codename: Tow Mater (2015-10-13)
+
+* Applying pull request #140. Thanks to @j15e for fixing an issue with logger
+  method causing dawn to abort. Thank you also to Igor to prompt me about this
+  issue existing again.
+
+## Version 1.4.1 - codename: Tow Mater (2015-10-13)
+
+* Applying pull request #145. Thanks to @wmotti, a typo in CVE-2015-1840 has
+  been fixed and the following false positives have been fixed as well:
+  jquery-rails 3.1.4, rack 1.5.5, activesupport 4.1.13
+
+## Version 1.4.0 - codename: Tow Mater (2015-09-16)
+
+* Fixing issue #144. CVE-2013-4491 detected rails version 3.2.22 as vulnerable
+  meanwhile it is not.
+* Adding a check for CVE-2014-7818: Directory traversal in Action Pack
+  contained in Ruby on Rails before 3.2.20, 4.0.11, 4.1.7 and 4.2.0.beta3
+* Adding a check for CVE-2014-7819: Directory traversal in multiple sprocket
+  versions.
+* Adding a check for CVE-2014-4975: DoS in Ruby interpreter 1.9.x, 2.0.x, 2.1.x
+* Adding a check for CVE-2014-3916: DoS in Ruby interpreter 1.9.x, 2.0.x, 2.1.x
+* Adding a check for CVE-2014-7829: Directory traversal in several rails
+  versions
+* Adding a check for CVE-2014-8090: DoS in REXML parser in some ruby
+  interpreter versions.
+* Adding a check for CVE-2012-6674: XSS in RedCloth gem (issue #143)
+* Adding a check for CVE-2014-9490: Denial of Service in raven-ruby gem (issue
+  #124)
+* Adding a check for CVE-2015-3448: Information leakage in rest-client gem
+  (issue #125)
 
 ## Version 1.3.5 - codename: Lightning McQueen (2015-07-29)
 
@@ -19,10 +251,12 @@ _latest update: Wed Jul 29 23:10:24 CEST 2015_
 * Adding a check for CVE-2015-3226: XSS in activesupport gem (issue #134)
 * Adding a check for CVE-2015-3227: DoS in activesupport gem (issue #137)
 * Adding a check for OSVDB-119927: MITM attack for http gem (issue #131)
-* Adding a check for OSVDB-119878: Session Fixation for rest-client gem (issue #130)
+* Adding a check for OSVDB-119878: Session Fixation for rest-client gem (issue
+  #130)
 * Adding a check for OSVDB-118954: Denial of service for rails gem (issue #129)
 * Adding a check for OSVDB-118579: MySQL credentials disclosure due to a flaw
-* Adding a check for OSVDB-118830: Sensitive information stored in production logs (issue #127)
+* Adding a check for OSVDB-118830: Sensitive information stored in production
+  logs (issue #127)
 
 ## Version 1.3.1 - codename: Lightning McQueen (2015-02-19)
 
@@ -38,7 +272,8 @@ _latest update: Wed Jul 29 23:10:24 CEST 2015_
 * Add a deprecation message. This is the last codesake-dawn release. New gem
   will be called dawnscanner.
 * gem name changed from codesake-dawn to dawnscanner. Binary program remains
-  'dawn' but the repository is moved here: https://github.com/thesp0nge/dawnscanner
+  'dawn' but the repository is moved here:
+  https://github.com/thesp0nge/dawnscanner
 
 ## Version 1.2.0 - codename: Lightning McQueen (2014-07-14)
 
@@ -182,9 +417,13 @@ _latest update: Wed Jul 29 23:10:24 CEST 2015_
   CVE-2014-0080 will be only available with dawn 1.1.
 
   Backported checks are:
-    + CVE-2014-1233: The paratrooper-pingdom gem 1.0.0 for Ruby allows local users to obtain the App-Key, username, and password values by listing the curl process.
-    + CVE-2014-1234: The paratrooper-newrelic gem 1.0.1 for Ruby allows local users to obtain the X-Api-Key value by listing the curl process.
-    + CVE-2014-0081: Multiple cross-site scripting (XSS) vulnerabilities in rails
+    + CVE-2014-1233: The paratrooper-pingdom gem 1.0.0 for Ruby allows local
+      users to obtain the App-Key, username, and password values by listing the
+      curl process.
+    + CVE-2014-1234: The paratrooper-newrelic gem 1.0.1 for Ruby allows local
+      users to obtain the X-Api-Key value by listing the curl process.
+    + CVE-2014-0081: Multiple cross-site scripting (XSS) vulnerabilities in
+      rails
     + CVE-2014-0082: Denial of service in Rails before 3.2.17
 
   New security checks are for Owasp ROR Cheatsheet:

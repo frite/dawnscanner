@@ -8,6 +8,7 @@ require 'cucumber/rake/task'
 require 'fileutils'
 require "dawn/utils"
 require "dawn/knowledge_base"
+require "dawn/knowledge_base_experimental"
 
 Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "features --format pretty -x"
@@ -96,6 +97,8 @@ task :cve, :name do |t,args|
     file.puts "\t\t\t\t# include RubyVersionCheck"
     file.puts ""
     file.puts "\t\t\t\tdef initialize"
+    file.puts "\t\t\t\t\ttitle   = \"\""
+    file.puts "\t\t\t\t\tmessage = \"\""
     file.puts "\t\t\t\tend"
     file.puts "\t\t\tend"
     file.puts "\t\tend"
@@ -111,18 +114,25 @@ task :cve, :name do |t,args|
     file.puts "\t\t@check = Dawn::Kb::#{class_name}.new"
     file.puts "\t\t# @check.debug = true"
     file.puts "\tend"
-    file.puts "\tit \"is reported when...\""
+    file.puts "\tit \"is reported when the vulnerable gem is detected\" do"
+    file.puts "\t\t@check.dependencies = [{:name=>\"\", :version=>\"\"}]"
+    file.puts "\t\texpect(@check.vuln?).to   eq(true)"
+    file.puts "\tend"
+    file.puts "\tit \"is not reported when a fixed release is detected\" do"
+    file.puts "\t\t@check.dependencies = [{:name=>\"\", :version=>\"\"}]"
+    file.puts "\t\texpect(@check.vuln?).to   eq(false)"
+    file.puts "\tend"
     file.puts "end"
   end
   puts "#{spec_filename} created"
 
-  puts "*** PLEASE IMPLEMENT TEST FOR #{name} IN spec/lib/dawn/knowledgebase_spec.rb in order to reflect changes"
-  puts "*** PLEASE ADD THIS CODE IN lib/dawn/knowledge_base.rb in order to reflect changes"
+  puts "*** PLEASE IMPLEMENT TEST FOR #{name} IN ./spec/lib/dawn/codesake_knowledgebase_spec.rb in order to reflect changes"
+  puts "*** PLEASE ADD THIS CODE IN ./lib/dawn/knowledge_base.rb in order to reflect changes"
   puts "require \"dawn/kb/#{class_name.downcase}\""
   puts "it \"must have test for #{name}\" do"
   puts "  sc = kb.find(\"#{name}\")"
-  puts "  sc.should_not   be_nil"
-  puts "  sc.class.should == Dawn::Kb::#{class_name}"
+  puts "  expect(sc).not_to   be_nil"
+  puts "  expect(sc.class).to eq(Dawn::Kb::#{class_name})"
   puts "end"
 
 
@@ -158,6 +168,8 @@ task :osvdb, :name do |t,args|
     file.puts "\t\t\t\t# include RubyVersionCheck"
     file.puts ""
     file.puts "\t\t\t\tdef initialize"
+    file.puts "\t\t\t\t\ttitle   = \"\""
+    file.puts "\t\t\t\t\tmessage = \"\""
     file.puts "\t\t\t\tend"
     file.puts "\t\t\tend"
     file.puts "\t\tend"
@@ -173,19 +185,26 @@ task :osvdb, :name do |t,args|
     file.puts "\t\t@check = Dawn::Kb::#{class_name}.new"
     file.puts "\t\t# @check.debug = true"
     file.puts "\tend"
-    file.puts "\tit \"is reported when...\""
+    file.puts "\tit \"is reported when the vulnerable gem is detected\" do"
+    file.puts "\t\t@check.dependencies = [{:name=>\"\", :version=>\"\"}]"
+    file.puts "\t\texpect(@check.vuln?).to   eq(true)"
+    file.puts "\tend"
+    file.puts "\tit \"is not reported when a fixed release is detected\" do"
+    file.puts "\t\t@check.dependencies = [{:name=>\"\", :version=>\"\"}]"
+    file.puts "\t\texpect(@check.vuln?).to   eq(false)"
+    file.puts "\tend"
     file.puts "end"
   end
   puts "#{spec_filename} created"
 
 
-  puts "*** PLEASE IMPLEMENT TEST FOR #{name} IN spec/lib/dawn/codesake_knowledgebase_spec.rb in order to reflect changes"
-  puts "*** PLEASE ADD THIS CODE IN lib/dawn/knowledge_base.rb in order to reflect changes"
+  puts "*** PLEASE IMPLEMENT TEST FOR #{name} IN ./spec/lib/dawn/codesake_knowledgebase_spec.rb in order to reflect changes"
+  puts "*** PLEASE ADD THIS CODE IN ./lib/dawn/knowledge_base.rb in order to reflect changes"
   puts "require \"dawn/kb/#{class_name.downcase}\""
   puts "it \"must have test for #{name}\" do"
   puts "  sc = kb.find(\"#{name}\")"
-  puts "  sc.should_not   be_nil"
-  puts "  sc.class.should == Dawn::Kb::#{class_name}"
+  puts "  expect(sc).not_to   be_nil"
+  puts "  expect(sc.class).to eq(Dawn::Kb::#{class_name})"
   puts "end"
 
 end
@@ -240,8 +259,8 @@ task :check, :name do |t,args|
   puts "#{spec_filename} created"
 
 
-  puts "*** PLEASE IMPLEMENT TEST FOR #{name} IN spec/lib/dawn/knowledgebase_spec.rb in order to reflect changes"
-  puts "*** PLEASE ADD THIS CODE IN lib/dawn/knowledge_base.rb in order to reflect changes"
+  puts "*** PLEASE IMPLEMENT TEST FOR #{name} IN ./spec/lib/dawn/codesake_knowledgebase_spec.rb in order to reflect changes"
+  puts "*** PLEASE ADD THIS CODE IN ./lib/dawn/knowledge_base.rb in order to reflect changes"
   puts "require \"dawn/kb/#{class_name.downcase}\""
   puts "it \"must have test for #{name}\" do"
   puts "  sc = kb.find(\"#{name}\")"
@@ -261,18 +280,44 @@ namespace :kb do
     end
 
   end
+  desc 'Pack the library for shipping'
+
+  task :pack do
+    YAML_KB = File.join(Dir.pwd, 'db')
+    __kb_pack
+  end
+
+  desc 'Transform all checks to YAML file and pack the library for shipping'
+  task :to_yaml do
+    YAML_KB = File.join(Dir.pwd, 'db')
+    FileUtils.rm_rf YAML_KB
+    FileUtils.mkdir_p YAML_KB
+
+    Dawn::KnowledgeBase.new.all.each do |check|
+      out_dir = File.join(YAML_KB, check.check_family.to_s)
+      FileUtils.mkdir_p(out_dir) unless Dir.exists? out_dir
+
+      filename = File.join(out_dir, check.name.gsub(" ", "_").gsub("-", "_") + '.yml')
+      open(filename, 'w') do |f|
+        f.puts(check.to_yaml)
+      end
+      puts "#{filename} created"
+    end
+
+    __kb_pack
+  end
 
   desc 'Creates a KnowledgeBase.md file'
   task :create do
     checks = Dawn::KnowledgeBase.new.all
     open("KnowledgeBase.md", "w") do |file|
-      file.puts "# Dawn Knowledge base"
-      file.puts "\nThe knowledge base library for Dawn version #{Dawn::VERSION} contains #{checks.count} security checks."
+      file.puts "# Dawnscanner Knowledge base"
+      file.puts "\nThe knowledge base library for dawnscanner version #{Dawn::VERSION} contains #{checks.count} security checks."
       file.puts "---"
       checks.each do |c|
         file.puts "* [#{c.name}](#{c.cve_link}): #{c.message}" if c.name.start_with?('CVE')
         file.puts "* [#{c.name}](#{c.osvdb_link}): #{c.message}" if c.name.start_with?('OSVDB')
-        file.puts "* #{c.name}: #{c.message}" unless c.name.start_with?('CVE')
+        file.puts "* #{c.name}: #{c.message}" unless c.name.start_with?('CVE') && c.name.start_with?('OSVDB')
       end
 
       file.puts "\n\n_Last updated: #{Time.now.strftime("%a %d %b %T %Z %Y")}_"
@@ -344,4 +389,54 @@ namespace :rubysec do
     system "rm -rf #{target_dir}ruby-advisory-db"
 
   end
+end
+
+def __kb_pack
+  if Dir.exists? "#{YAML_KB}/bulletin"
+    system "tar cfvz #{YAML_KB}/bulletin.tar.gz #{YAML_KB}/bulletin"
+    system "rm -rf #{YAML_KB}/bulletin"
+    system "shasum -a 256 #{YAML_KB}/bulletin.tar.gz > #{YAML_KB}/bulletin.tar.gz.sig"
+  end
+
+  if Dir.exists? "#{YAML_KB}/generic_check"
+    system "tar cfvz #{YAML_KB}/generic_check.tar.gz #{YAML_KB}/generic_check"
+    system "rm -rf #{YAML_KB}/generic_check"
+    system "shasum -a 256 #{YAML_KB}/generic_check.tar.gz > #{YAML_KB}/generic_check.tar.gz.sig"
+  end
+
+  if Dir.exists? "#{YAML_KB}/owasp_ror_cheatsheet"
+    system "tar cfvz #{YAML_KB}/owasp_ror_cheatsheet.tar.gz #{YAML_KB}/owasp_ror_cheatsheet"
+    system "rm -rf #{YAML_KB}/owasp_ror_cheatsheet"
+    system "shasum -a 256 #{YAML_KB}/owasp_ror_cheatsheet.tar.gz > #{YAML_KB}/owasp_ror_cheatsheet.tar.gz.sig"
+  end
+
+  if Dir.exists? "#{YAML_KB}/code_style"
+    system "tar cfvz #{YAML_KB}/code_style.tar.gz #{YAML_KB}/code_style"
+    system "rm -rf #{YAML_KB}/code_style"
+    system "shasum -a 256 #{YAML_KB}/code_style.tar.gz > #{YAML_KB}/code_style.tar.gz.sig"
+  end
+  if Dir.exists? "#{YAML_KB}/code_quality"
+    system "tar cfvz #{YAML_KB}/code_quality.tar.gz #{YAML_KB}/code_quality"
+    system "rm -rf #{YAML_KB}/code_quality"
+    system "shasum -a 256 #{YAML_KB}/code_quality.tar.gz > #{YAML_KB}/code_quality.tar.gz.sig"
+  end
+  if Dir.exists? "#{YAML_KB}/owasp_top_10"
+    system "tar cfvz #{YAML_KB}/owasp_top_10.tar.gz #{YAML_KB}/owasp_top_10"
+    system "rm -rf #{YAML_KB}/owasp_top_10"
+    system "shasum -a 256 #{YAML_KB}/owasp_top_10.tar.gz > #{YAML_KB}/owasp_top_10.tar.gz.sig"
+  end
+
+
+  open(File.join(YAML_KB, "kb.yaml"), 'w') do |f|
+    f.puts(Dawn::KnowledgeBaseExperimental.kb_descriptor)
+  end
+  puts "kb.yaml created"
+  system "shasum -a 256 #{YAML_KB}/kb.yaml > #{YAML_KB}/kb.yaml.sig"
+
+  system "tar cfvz #{YAML_KB}/signatures.tar.gz #{YAML_KB}/*.tar.gz.sig"
+  system "rm -rf #{YAML_KB}/*.tar.gz.sig "
+  puts "#{YAML_KB}/signatures.tar.gz created"
+
+  puts "Library ready to be shipped"
+
 end

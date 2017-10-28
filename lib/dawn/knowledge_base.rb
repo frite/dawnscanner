@@ -7,14 +7,13 @@ require "dawn/kb/operating_system_check"
 require "dawn/kb/combo_check"
 require "dawn/kb/version_check"
 require "dawn/kb/deprecation_check"
+require "dawn/kb/gem_check"
 
 # Q&A related checks
 ## Not revised code
 require "dawn/kb/not_revised_code"
-# require "dawn/kb/owasp_ror_cheatsheet"
 
 ## Owasp ROR Cheatsheet
-
 require 'dawn/kb/owasp_ror_cheatsheet/command_injection'
 require 'dawn/kb/owasp_ror_cheatsheet/csrf'
 require 'dawn/kb/owasp_ror_cheatsheet/session_stored_in_database'
@@ -134,6 +133,7 @@ require "dawn/kb/cve_2012_6109"
 require "dawn/kb/cve_2012_6134"
 require "dawn/kb/cve_2012_6496"
 require "dawn/kb/cve_2012_6497"
+require "dawn/kb/cve_2012_6684"
 
 # CVE - 2013
 require "dawn/kb/cve_2013_0155"
@@ -152,6 +152,7 @@ require "dawn/kb/cve_2013_0277"
 require "dawn/kb/cve_2013_0284"
 require "dawn/kb/cve_2013_0285"
 require "dawn/kb/cve_2013_0333"
+require "dawn/kb/cve_2013_0334"
 require "dawn/kb/cve_2013_1607"
 require "dawn/kb/cve_2013_1655"
 require "dawn/kb/cve_2013_1656"
@@ -220,13 +221,20 @@ require "dawn/kb/cve_2014_2525"
 require "dawn/kb/cve_2014_2538"
 require "dawn/kb/cve_2014_3482"
 require "dawn/kb/cve_2014_3483"
+require "dawn/kb/cve_2014_3916"
+require "dawn/kb/cve_2014_4975"
+require "dawn/kb/cve_2014_7818"
+require "dawn/kb/cve_2014_7819"
+require "dawn/kb/cve_2014_7829"
+require "dawn/kb/cve_2014_8090"
+require "dawn/kb/cve_2014_9490"
 
 # CVE - 2015
 
 
+require "dawn/kb/cve_2015_1819"
 # CVE-2015-1840 is spread in two classes because a single CVE is assigned to a
-# vulnerability affecting two differents but related gems. An idiot hack to
-# mitigate an idiot decision.
+# vulnerability affecting two differents but related gems.
 require "dawn/kb/cve_2015_1840/cve_2015_1840_a"
 require "dawn/kb/cve_2015_1840/cve_2015_1840_b"
 require "dawn/kb/cve_2015_2963"
@@ -234,7 +242,35 @@ require "dawn/kb/cve_2015_3224"
 require "dawn/kb/cve_2015_3225"
 require "dawn/kb/cve_2015_3226"
 require "dawn/kb/cve_2015_3227"
+require "dawn/kb/cve_2015_3448"
+require "dawn/kb/cve_2015_4020"
+require "dawn/kb/cve_2015_5312"
+require "dawn/kb/cve_2015_7497"
+require "dawn/kb/cve_2015_7498"
+require "dawn/kb/cve_2015_7499"
+require "dawn/kb/cve_2015_7500"
+require "dawn/kb/cve_2015_7519"
+require "dawn/kb/cve_2015_7541"
+require "dawn/kb/cve_2015_7576"
+require "dawn/kb/cve_2015_7577"
+require "dawn/kb/cve_2015_7578"
+require "dawn/kb/cve_2015_7579"
+require "dawn/kb/cve_2015_7581"
+require "dawn/kb/cve_2015_8241"
+require "dawn/kb/cve_2015_8242"
+require "dawn/kb/cve_2015_8317"
 
+# CVE - 2016
+
+require "dawn/kb/cve_2016_0751"
+require "dawn/kb/cve_2016_0752"
+require "dawn/kb/cve_2016_0753"
+require "dawn/kb/cve_2016_2097"
+require "dawn/kb/cve_2016_2098"
+require "dawn/kb/cve_2016_5697"
+require "dawn/kb/cve_2016_6316"
+require "dawn/kb/cve_2016_6317"
+require "dawn/kb/cve_2016_6582"
 
 # OSVDB
 
@@ -243,11 +279,18 @@ require "dawn/kb/osvdb_108569"
 require "dawn/kb/osvdb_108570"
 require "dawn/kb/osvdb_108530"
 require "dawn/kb/osvdb_108563"
+require "dawn/kb/osvdb_115654"
+require "dawn/kb/osvdb_116010"
+require "dawn/kb/osvdb_117903"
 require "dawn/kb/osvdb_118579"
 require "dawn/kb/osvdb_118830"
 require "dawn/kb/osvdb_118954"
 require "dawn/kb/osvdb_119878"
 require "dawn/kb/osvdb_119927"
+require "dawn/kb/osvdb_120415"
+require "dawn/kb/osvdb_120857"
+require "dawn/kb/osvdb_121701"
+require "dawn/kb/osvdb_132234"
 
 
 
@@ -257,6 +300,7 @@ module Dawn
 
     include Dawn::Utils
 
+    GEM_CHECK           = :rubygem_check
     DEPENDENCY_CHECK    = :dependency_check
     PATTERN_MATCH_CHECK = :pattern_match_check
     RUBY_VERSION_CHECK  = :ruby_version_check
@@ -410,6 +454,7 @@ module Dawn
           Dawn::Kb::CVE_2012_6134.new,
           Dawn::Kb::CVE_2012_6496.new,
           Dawn::Kb::CVE_2012_6497.new,
+          Dawn::Kb::CVE_2012_6684.new,
           Dawn::Kb::CVE_2013_0155.new,
           Dawn::Kb::CVE_2013_0156.new,
           Dawn::Kb::CVE_2013_0162.new,
@@ -426,6 +471,7 @@ module Dawn
           Dawn::Kb::CVE_2013_0284.new,
           Dawn::Kb::CVE_2013_0285.new,
           Dawn::Kb::CVE_2013_0333.new,
+          Dawn::Kb::CVE_2013_0334.new,
           Dawn::Kb::CVE_2013_1607.new,
           Dawn::Kb::CVE_2013_1655.new,
           Dawn::Kb::CVE_2013_1656.new,
@@ -491,6 +537,14 @@ module Dawn
           Dawn::Kb::CVE_2014_2538.new,
           Dawn::Kb::CVE_2014_3482.new,
           Dawn::Kb::CVE_2014_3483.new,
+          Dawn::Kb::CVE_2014_3916.new,
+          Dawn::Kb::CVE_2014_4975.new,
+          Dawn::Kb::CVE_2014_7818.new,
+          Dawn::Kb::CVE_2014_7819.new,
+          Dawn::Kb::CVE_2014_7829.new,
+          Dawn::Kb::CVE_2014_8090.new,
+          Dawn::Kb::CVE_2014_9490.new,
+          Dawn::Kb::CVE_2015_1819.new,
           Dawn::Kb::CVE_2015_1840_a.new,
           Dawn::Kb::CVE_2015_1840_b.new,
           Dawn::Kb::CVE_2015_2963.new,
@@ -498,6 +552,32 @@ module Dawn
           Dawn::Kb::CVE_2015_3225.new,
           Dawn::Kb::CVE_2015_3226.new,
           Dawn::Kb::CVE_2015_3227.new,
+          Dawn::Kb::CVE_2015_3448.new,
+          Dawn::Kb::CVE_2015_4020.new,
+          Dawn::Kb::CVE_2015_5312.new,
+          Dawn::Kb::CVE_2015_7497.new,
+          Dawn::Kb::CVE_2015_7498.new,
+          Dawn::Kb::CVE_2015_7499.new,
+          Dawn::Kb::CVE_2015_7500.new,
+          Dawn::Kb::CVE_2015_7519.new,
+          Dawn::Kb::CVE_2015_7541.new,
+          Dawn::Kb::CVE_2015_7576.new,
+          Dawn::Kb::CVE_2015_7577.new,
+          Dawn::Kb::CVE_2015_7578.new,
+          Dawn::Kb::CVE_2015_7579.new,
+          Dawn::Kb::CVE_2015_7581.new,
+          Dawn::Kb::CVE_2015_8241.new,
+          Dawn::Kb::CVE_2015_8242.new,
+          Dawn::Kb::CVE_2015_8317.new,
+          Dawn::Kb::CVE_2016_0751.new,
+          Dawn::Kb::CVE_2016_0752.new,
+          Dawn::Kb::CVE_2016_0753.new,
+          Dawn::Kb::CVE_2016_2097.new,
+          Dawn::Kb::CVE_2016_2098.new,
+          Dawn::Kb::CVE_2016_5697.new,
+          Dawn::Kb::CVE_2016_6316.new,
+          Dawn::Kb::CVE_2016_6317.new,
+          Dawn::Kb::CVE_2016_6582.new,
 
 
           # OSVDB Checks are still here since are all about dependencies
@@ -506,11 +586,18 @@ module Dawn
           Dawn::Kb::OSVDB_108570.new,
           Dawn::Kb::OSVDB_108530.new,
           Dawn::Kb::OSVDB_108563.new,
+          Dawn::Kb::OSVDB_115654.new,
+          Dawn::Kb::OSVDB_116010.new,
+          Dawn::Kb::OSVDB_117903.new,
           Dawn::Kb::OSVDB_118579.new,
           Dawn::Kb::OSVDB_118830.new,
           Dawn::Kb::OSVDB_118954.new,
           Dawn::Kb::OSVDB_119878.new,
           Dawn::Kb::OSVDB_119927.new,
+          Dawn::Kb::OSVDB_120415.new,
+          Dawn::Kb::OSVDB_120857.new,
+          Dawn::Kb::OSVDB_121701.new,
+          Dawn::Kb::OSVDB_132234.new,
       ]
         # END @cve_security_checks array
         # START @owasp_ror_cheatsheet_checks array
@@ -534,11 +621,28 @@ module Dawn
 
           ret = []
           ret += @aux_checks
-          ret += @cve_security_checks         if @enabled_checks.include?(:cve_bulletin)
+          ret += @cve_security_checks         if @enabled_checks.include?(:bulletin)
           ret += @owasp_ror_cheatsheet_checks if @enabled_checks.include?(:owasp_ror_cheatsheet)
           ret += @code_quality_checks         if @enabled_checks.include?(:code_quality)
 
           ret
+    end
+
+    def self.dump(verbose=false)
+      puts "Security checks currently supported:"
+      i=0
+      self.new.all.each do |check|
+        i+=1
+        if verbose
+          puts "Name: #{check.name}\tCVSS: #{check.cvss_score}\tReleased: #{check.release_date}"
+          puts "Description\n#{check.message}"
+          puts "Remediation\n#{check.remediation}\n\n"
+        else
+          puts "#{check.name}"
+        end
+      end
+      puts "-----\nTotal: #{i}"
+
     end
   end
 

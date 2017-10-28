@@ -1,7 +1,7 @@
 module Dawn
-    VERSION = "1.3.5"
-    CODENAME = "Lightning McQueen"
-    RELEASE = "20150729"
-    BUILD = "31"
-    COMMIT = "ge32c804"
+    VERSION = "1.6.8"
+    CODENAME = "Tow Mater"
+    RELEASE = "20170407"
+    BUILD = "3"
+    COMMIT = "gd5245d7"
 end
